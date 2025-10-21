@@ -1,0 +1,141 @@
+:root {
+  --gold: #666666;
+  --gold-dark: #2f2f2f;
+  --gray-bg: #252525;
+  --gray-circle: #1a1a1a;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: var(--gray-bg);
+  overflow: hidden;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gray-circle);
+  z-index: 0;
+}
+
+.bg-circle.left {
+  width: 80vmin;
+  height: 80vmin;
+  top: -40vmin;
+  left: -40vmin;
+}
+
+.bg-circle.right {
+  width: 90vmin;
+  height: 90vmin;
+  right: -45vmin;
+  bottom: -45vmin;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  color: #000;
+  border-radius: 20px;
+  padding: 3rem 2rem 2.5rem;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  text-align: center;
+  position: relative;
+}
+
+.avatar-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  top: -48px;
+  transform: translateX(-50%);
+  border: 4px solid #ccc;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.avatar-wrap img {
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  padding: .45rem .75rem;
+  height: 40px;
+  box-shadow: none;
+  background: #fff;
+  color: #000;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: var(--gold);
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: #000;
+  border: 0;
+  padding: .55rem 1rem;
+  border-radius: 8px;
+  width: 180px;
+  display: inline-block;
+}
+.btn-gold:hover {
+  background: var(--gold-dark);
+  color: #fff;
+}
+
+.small-link {
+  font-size: .85rem;
+  color: var(--gold-dark);
+  text-decoration: none;
+}
+.small-link:hover {
+  text-decoration: underline;
+  color: var(--gold);
+}
+
+.divider {
+  height: 1px;
+  background: #ddd;
+  margin: 12px 0 10px;
+}
+
+@media (max-width: 420px) {
+  .login-card {
+    padding: 2.6rem 1.2rem 2rem;
+    border-radius: 16px;
+  }
+  .avatar-wrap {
+    width: 84px;
+    height: 84px;
+    top: -42px;
+    border-width: 3px;
+  }
+}
