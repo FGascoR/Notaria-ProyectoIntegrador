@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,9 +30,16 @@
 
                 <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
                 <li class="nav-item"><a class="nav-link" href="#notario">Notario</a></li>
-                <li class="nav-item ms-3">
+                <li class="nav-item ms-3" sec:authorize="!isAuthenticated()">
                     <a href="/Login" class="btn btn-warning">Inicio de Sesión</a>
                 </li>
+
+                <li class="nav-item ms-3" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-gold">Cerrar Sesión</button>
+                    </form>
+                </li>
+
             </ul>
         </div>
     </div>
