@@ -20,6 +20,9 @@ body {
     padding: 20px;
     height: 100vh;
     box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .sidebar h2 {
@@ -54,6 +57,7 @@ body {
     flex-grow: 1;
     padding: 50px;
     background-color: #f8f9fa;
+    margin-left: 250px;
 }
 
 .content h1 {
