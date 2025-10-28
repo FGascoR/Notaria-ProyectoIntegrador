@@ -15,6 +15,9 @@ public class Servicio {
     @Column(name = "idServicio")
     private Integer idServicio;
 
+    @Column(name = "img", length = 255)
+    private String img;
+
     @Column(name = "nombre", length = 100)
     private String nombre;
 

@@ -31,18 +31,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/Login",
-                                "/login",
-                                "/registrarse",
-                                "/Registrarse",
-                                "/Notaria",
-                                "/Pagina",
-                                "/css/**",
-                                "/js/**",
-                                "/img/**",
-                                "/styleLogin.css",
-                                "/stylePagina.css",
-                                "/styleSistemaNotario.css"
+                                "/Login", "/login", "/registrarse", "/Registrarse",
+                                "/Notaria", "/Pagina",
+                                "/css/**", "/js/**", "/img/**",
+                                "/uploads/**",
+                                "/styleLogin.css", "/stylePagina.css", "/styleSistemaNotario.css"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
