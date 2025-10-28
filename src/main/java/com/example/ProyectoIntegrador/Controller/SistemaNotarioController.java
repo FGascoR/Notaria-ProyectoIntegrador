@@ -3,9 +3,11 @@ package com.example.ProyectoIntegrador.Controller;
 import com.example.ProyectoIntegrador.Entity.Notario;
 import com.example.ProyectoIntegrador.Entity.Usuario;
 import com.example.ProyectoIntegrador.Entity.Servicio;
+import com.example.ProyectoIntegrador.Entity.Cliente;
 import com.example.ProyectoIntegrador.Repository.NotarioRepository;
 import com.example.ProyectoIntegrador.Repository.UsuarioRepository;
 import com.example.ProyectoIntegrador.Repository.ServicioRepository;
+import com.example.ProyectoIntegrador.Repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -25,8 +27,12 @@ public class SistemaNotarioController {
     @Autowired
     private ServicioRepository servicioRepository;
 
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     @GetMapping("/SistemaNotario")
     public String sistemaNotario(Authentication authentication, Model model) {
+
         String nombreUsuario = authentication.getName();
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
 
@@ -39,9 +45,10 @@ public class SistemaNotarioController {
             }
         }
 
-        List<Servicio> servicios = servicioRepository.findAll();
-        model.addAttribute("servicios", servicios);
+        model.addAttribute("servicios", servicioRepository.findAll());
         model.addAttribute("servicio", new Servicio());
+
+        model.addAttribute("clientes", clienteRepository.findAll());
 
         return "SistemaNotario";
     }
