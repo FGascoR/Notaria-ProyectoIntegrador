@@ -103,6 +103,40 @@
         </div>
     </section>
 
+    <!-- Gestión de Clientes -->
+
+    <section id="clientes" class="mt-5" style="display: none;">
+        <h2 class="mb-3">Gestión de Clientes</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle" id="tablaClientes">
+                <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.idCliente}"></td>
+                    <td th:text="${cliente.nombre}"></td>
+                    <td th:text="${cliente.apellido}"></td>
+                    <td th:text="${cliente.dni}"></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-info"
+                                th:attr="onclick=|verUsuario(${cliente.idCliente})|">
+                            Usuario
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
 </div>
 
 <!-- Modal Agregar Servicio -->
@@ -203,6 +237,26 @@
     </div>
 </div>
 
+<!-- Modal Ver Usuario -->
+
+<div class="modal fade" id="modalUsuarioCliente" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Usuario Vinculado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>ID Usuario:</strong> <span id="usuarioId"></span></p>
+                <p><strong>Nombre Usuario:</strong> <span id="usuarioNombre"></span></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -217,6 +271,7 @@
 
     document.getElementById("linkInicio").onclick = () => mostrarSeccion("inicio");
     document.getElementById("linkServicios").onclick = () => mostrarSeccion("servicios");
+    document.getElementById("linkClientes").onclick = () => mostrarSeccion("clientes");
 
     const params = new URLSearchParams(window.location.search);
     mostrarSeccion(params.get("seccion") ?? "inicio");
@@ -251,6 +306,21 @@
         doc.autoTable({ head: [headers], body: rows, startY: 30 });
         doc.save("servicios.pdf");
     };
+
+    function verUsuario(idCliente) {
+    fetch('/clientes/usuario/' + idCliente)
+        .then(r => r.json())
+        .then(data => {
+            if (data) {
+                document.getElementById('usuarioId').textContent = data.idUsuario;
+                document.getElementById('usuarioNombre').textContent = data.nombreUsuario;
+            } else {
+                document.getElementById('usuarioId').textContent = "No asignado";
+                document.getElementById('usuarioNombre').textContent = "No asignado";
+            }
+            new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
+        });
+    }
 </script>
 
 </body>
