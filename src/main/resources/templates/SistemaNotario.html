@@ -190,8 +190,17 @@
                         </td>
 
                         <td class="text-center">
-                            <span th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-success">PAGADO</span>
-                            <span th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-danger">PENDIENTE</span>
+                            <div th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
+                                <a th:href="@{'/proceso/notario/' + ${t.idTramite}}" class="btn btn-primary btn-sm fw-bold">
+                                    Ver Proceso 💬
+                                </a>
+                            </div>
+
+                            <div th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
+                                <button class="btn btn-secondary btn-sm" disabled title="Esperando pago del cliente">
+                                    🔒 Pendiente Pago
+                                </button>
+                            </div>
                         </td>
 
                         <td class="text-center">
