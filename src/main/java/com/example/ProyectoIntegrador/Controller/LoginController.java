@@ -26,11 +26,4 @@ public class LoginController {
         return "Login"; 
     }
 
-   
-    @GetMapping("/Pagina")
-    public String paginaPublica() {
-        return "Pagina";
-    }
-
-    
 }
