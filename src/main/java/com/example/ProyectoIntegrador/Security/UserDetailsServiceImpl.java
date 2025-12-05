@@ -19,18 +19,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String nombreUsuario) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findAll()
-                .stream()
-                .filter(u -> u.getNombreUsuario().equalsIgnoreCase(nombreUsuario))
-                .findFirst()
+        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + nombreUsuario));
-        
+
         String roleName = "ROLE_" + usuario.getRol().name().toUpperCase();
         return User.builder()
                 .username(usuario.getNombreUsuario())
                 .password(usuario.getContrasena())
-                //.roles(usuario.getRol().name())     // <--  REEMPLAZA ESTA LÍNEA
-                .authorities(roleName)              // <--  CON ESTA
+                .authorities(roleName)
                 .build();
     }
 }
