@@ -163,10 +163,24 @@
             </p>
 
             <div th:if="${t.estado.name() == 'aceptado'}" class="mt-2">
-                <button class="btn btn-success btn-sm w-100"
-                        th:attr="onclick=|abrirModalPago('${t.idTramite}', '${t.servicio.nombre}', '${t.servicio.costo}')|">
-                    Realizar Pago 💳
-                </button>
+
+                <div th:unless="${estadoPagos != null and estadoPagos.containsKey(t.idTramite) and estadoPagos.get(t.idTramite)}">
+                    <button class="btn btn-success btn-sm w-100"
+                            th:attr="onclick=|abrirModalPago('${t.idTramite}', '${t.servicio.nombre}', '${t.servicio.costo}')|">
+                        Realizar Pago 💳
+                    </button>
+                </div>
+
+                <div th:if="${estadoPagos != null and estadoPagos.containsKey(t.idTramite) and estadoPagos.get(t.idTramite)}">
+                    <div class="alert alert-success p-1 text-center mb-2" style="font-size: 0.8rem;">
+                        <i class="bi bi-check-circle-fill"></i> ¡Pago Confirmado!
+                    </div>
+
+                    <a th:href="@{'/proceso/cliente/' + ${t.idTramite}}"
+                       class="btn btn-info btn-sm fw-bold text-white w-100">
+                        Ir al Panel de Trámite 📂
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -1,31 +1,27 @@
 package com.example.ProyectoIntegrador.Controller;
 
 import com.example.ProyectoIntegrador.Entity.Cliente;
+import com.example.ProyectoIntegrador.Entity.Tramite;
 import com.example.ProyectoIntegrador.Entity.Usuario;
-import com.example.ProyectoIntegrador.Repository.ClienteRepository;
-import com.example.ProyectoIntegrador.Repository.ServicioRepository;
-import com.example.ProyectoIntegrador.Repository.TramiteRepository;
-import com.example.ProyectoIntegrador.Repository.UsuarioRepository;
+import com.example.ProyectoIntegrador.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class PaginaController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private TramiteRepository tramiteRepository;
-
-    @Autowired
-    private ServicioRepository servicioRepository; // ← Faltaba esto
+    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired private ClienteRepository clienteRepository;
+    @Autowired private TramiteRepository tramiteRepository;
+    @Autowired private ServicioRepository servicioRepository;
+    @Autowired private PagoRepository pagoRepository; // Inyectamos esto
 
     @GetMapping("/Pagina")
     public String inicio(Model model, Authentication authentication) {
@@ -42,8 +38,14 @@ public class PaginaController {
                         .findFirst().orElse(null);
 
                 if(cliente != null) {
-                    model.addAttribute("misTramites",
-                            tramiteRepository.findByClienteOrderByFechaInicioDesc(cliente));
+                    List<Tramite> tramites = tramiteRepository.findByClienteOrderByFechaInicioDesc(cliente);
+                    model.addAttribute("misTramites", tramites);
+
+                    Map<Integer, Boolean> estadoPagos = new HashMap<>();
+                    for (Tramite t : tramites) {
+                        estadoPagos.put(t.getIdTramite(), pagoRepository.existsByTramite(t));
+                    }
+                    model.addAttribute("estadoPagos", estadoPagos);
                 }
             }
         }
