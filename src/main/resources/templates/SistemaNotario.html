@@ -5,276 +5,348 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema de Gestión Notarial</title>
 
-    <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Tus estilos -->
-    <link href="/css/stylesSistemaNotario.css" rel="stylesheet">
-
     <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Barra Lateral Fija */
+        .sidebar {
+            width: 250px;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+        }
+
+        .sidebar a {
+            color: #bbb;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #b8860b;
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .sidebar a.logout {
+            margin-top: auto;
+            background-color: #dc3545;
+            color: white;
+            text-align: center;
+        }
+
+        /* Contenido Principal */
+        .content {
+            margin-left: 250px; /* Empuja el contenido a la derecha */
+            padding: 30px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
         .thumb-servicio {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Ocultar secciones por defecto */
+        section {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="sidebar d-flex flex-column">
-    <a href="#" id="linkInicio">Inicio</a>
-    <a href="#" id="linkClientes">Clientes</a>
-    <a href="#" id="linkTramites">Trámites</a>
-    <a href="#" id="linkReportes">Reportes</a>
-    <a href="#" id="linkServicios">Servicios</a>
-    <a href="#" id="linkBandeja">Bandeja de Entrada</a>
+<div class="sidebar">
+    <h3 class="text-center mb-4 text-warning">Notaría</h3>
+    <a href="#" onclick="mostrarSeccion('inicio')" id="linkInicio">Inicio</a>
+    <a href="#" onclick="mostrarSeccion('clientes')" id="linkClientes">Clientes</a>
+    <a href="#" onclick="mostrarSeccion('tramites')" id="linkTramites">Trámites en Curso</a>
+    <a href="#" onclick="mostrarSeccion('servicios')" id="linkServicios">Servicios</a>
+    <a href="#" onclick="mostrarSeccion('solicitudes')" id="linkSolicitudes">Bandeja Solicitudes</a>
     <div class="flex-grow-1"></div>
-    <a th:href="@{/logout}" class="logout text-white">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout">Cerrar Sesión</a>
 </div>
 
 <div class="content">
 
-    <section id="inicio">
-        <h1>Bienvenido <strong th:text="${nombreNotario}"></strong>, al Sistema de Gestión Notarial</h1>
-        <hr>
-        <p>Selecciona una opción del menú lateral para comenzar.</p>
-    </section>
-
-    <section id="servicios" class="mt-5" style="display: none;">
-        <h2 class="mb-3">Gestión de Servicios</h2>
-
-        <div class="mb-3 d-flex align-items-center gap-2">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">Agregar Servicio</button>
-
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="exportarDropdown" data-bs-toggle="dropdown">
-                    Exportar
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" th:href="@{/servicios/exportar-excel}">Exportar a Excel</a></li>
-                    <li><a class="dropdown-item" href="#" id="exportarPDF">Exportar a PDF</a></li>
-                </ul>
+    <section id="inicio" style="display: block;">
+        <div class="card p-5">
+            <h1 class="mb-3">Bienvenido, <strong class="text-warning" th:text="${nombreNotario}">Notario</strong></h1>
+            <p class="lead">Sistema de Gestión Notarial Integrado.</p>
+            <hr>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white p-3 mb-3">
+                        <h5>Solicitudes Pendientes</h5>
+                        <h2 th:text="${solicitudesPendientes != null ? solicitudesPendientes.size() : 0}">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white p-3 mb-3">
+                        <h5>Trámites en Curso</h5>
+                        <h2 th:text="${tramitesEnProceso != null ? tramitesEnProceso.size() : 0}">0</h2>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle" id="tablaServicios">
-                <thead class="table-dark text-center">
-                <tr>
-                    <th>ID</th>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Costo</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
+    <section id="solicitudes">
+        <h2 class="mb-4">Bandeja de Solicitudes (Pendientes)</h2>
 
-                <tbody>
-                <tr th:each="servicio : ${servicios}">
-                    <td th:text="${servicio.idServicio}"></td>
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Trámite</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${solicitudesPendientes == null or solicitudesPendientes.empty}">
+                        <td colspan="6" class="text-center p-4">No hay solicitudes pendientes.</td>
+                    </tr>
+                    <tr th:each="t : ${solicitudesPendientes}">
+                        <td th:text="${t.idTramite}"></td>
+                        <td th:text="${t.fechaInicio}"></td>
+                        <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
+                        <td th:text="${t.servicio.nombre}" class="fw-bold text-primary"></td>
+                        <td th:text="${t.observaciones}"></td>
+                        <td class="text-center">
+                            <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/aceptado'}"
+                               class="btn btn-sm btn-success"
+                               title="Aceptar"
+                               onclick="return confirm('¿Aceptar esta solicitud?');">✔ Aceptar</a>
 
-                    <td class="text-center">
-                        <img th:if="${servicio.img != null}"
-                             th:src="@{'/uploads/servicios/' + ${servicio.img}}"
-                             class="thumb-servicio"
-                             alt="imagen servicio">
-                        <span th:if="${servicio.img == null}">—</span>
-                    </td>
-
-                    <td th:text="${servicio.nombre}"></td>
-                    <td th:text="${servicio.descripcion}"></td>
-                    <td th:text="${servicio.costo}"></td>
-
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-warning me-2"
-                                th:attr="onclick=|editarServicio(${servicio.idServicio})|">
-                            Editar
-                        </button>
-                        <a th:href="@{'/servicios/eliminar/' + ${servicio.idServicio}}"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('¿Seguro que deseas eliminar este servicio?');">
-                            Eliminar
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-
-            </table>
+                            <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/rechazado'}"
+                               class="btn btn-sm btn-danger"
+                               title="Rechazar"
+                               onclick="return confirm('¿Rechazar esta solicitud?');">✖ Rechazar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
+    <section id="tramites">
+        <h2 class="mb-4">Trámites en Curso</h2>
+        <div class="alert alert-info">Aquí se muestran los trámites aceptados y su estado de pago.</div>
 
-    <section id="clientes" class="mt-5" style="display: none;">
-        <h2 class="mb-3">Gestión de Clientes</h2>
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark text-center">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Estado Trámite</th>
+                        <th>Estado Pago</th>
+                        <th>Gestión</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${tramitesEnProceso == null or tramitesEnProceso.empty}">
+                        <td colspan="6" class="text-center p-4">No hay trámites en curso.</td>
+                    </tr>
+                    <tr th:each="t : ${tramitesEnProceso}">
+                        <td th:text="${t.idTramite}"></td>
+                        <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
+                        <td th:text="${t.servicio.nombre}"></td>
+                        <td class="text-center">
+                            <span class="badge bg-info text-dark" th:text="${t.estado}"></span>
+                        </td>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle" id="tablaClientes">
-                <thead class="table-dark text-center">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="cliente : ${clientes}">
-                    <td th:text="${cliente.idCliente}"></td>
-                    <td th:text="${cliente.nombre}"></td>
-                    <td th:text="${cliente.apellido}"></td>
-                    <td th:text="${cliente.dni}"></td>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-info"
-                                th:attr="onclick=|verUsuario(${cliente.idCliente})|">
-                            Usuario
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        <td class="text-center">
+                            <span th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-success">PAGADO</span>
+                            <span th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-danger">PENDIENTE</span>
+                        </td>
+
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-secondary">Detalles</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Gestión de Servicios</h2>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">+ Nuevo Servicio</button>
+        </div>
+
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="tablaServicios">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Costo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="servicio : ${servicios}">
+                        <td th:text="${servicio.idServicio}"></td>
+                        <td>
+                            <img th:if="${servicio.img != null}" th:src="@{'/uploads/servicios/' + ${servicio.img}}" class="thumb-servicio">
+                        </td>
+                        <td th:text="${servicio.nombre}"></td>
+                        <td th:text="${servicio.descripcion}"></td>
+                        <td th:text="'S/ ' + ${servicio.costo}"></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" th:attr="onclick=|editarServicio(${servicio.idServicio})|">Editar</button>
+                            <a th:href="@{'/servicios/eliminar/' + ${servicio.idServicio}}" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="clientes">
+        <h2 class="mb-4">Directorio de Clientes</h2>
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-striped" id="tablaClientes">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th> <th>Nombre</th> <th>Apellido</th> <th>DNI</th> <th>Usuario</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cliente : ${clientes}">
+                        <td th:text="${cliente.idCliente}"></td>
+                        <td th:text="${cliente.nombre}"></td>
+                        <td th:text="${cliente.apellido}"></td>
+                        <td th:text="${cliente.dni}"></td>
+                        <td>
+                            <button class="btn btn-sm btn-info text-white" th:attr="onclick=|verUsuario(${cliente.idCliente})|">Ver Usuario</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
 </div>
 
 <div class="modal fade" id="modalAgregarServicio" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
             <form th:action="@{/servicios/guardar}" method="post" th:object="${servicio}" enctype="multipart/form-data">
-
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Agregar Nuevo Servicio</h5>
+                    <h5 class="modal-title">Nuevo Servicio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label class="form-label">Imagen del Servicio</label>
-                        <input type="file" class="form-control" name="imagenArchivo" accept="image/*" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" th:field="*{nombre}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea class="form-control" th:field="*{descripcion}" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Costo (S/)</label>
-                        <input type="number" class="form-control" step="0.01" th:field="*{costo}" required>
-                    </div>
-
+                    <div class="mb-3"><label>Imagen</label><input type="file" class="form-control" name="imagenArchivo" accept="image/*" required></div>
+                    <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" th:field="*{nombre}" required></div>
+                    <div class="mb-3"><label>Descripción</label><textarea class="form-control" th:field="*{descripcion}" required></textarea></div>
+                    <div class="mb-3"><label>Costo</label><input type="number" class="form-control" step="0.01" th:field="*{costo}" required></div>
                 </div>
-
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Guardar</button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
-
 <div class="modal fade" id="modalEditarServicio" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
-
             <form th:action="@{/servicios/editar}" method="post" enctype="multipart/form-data">
-
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title">Editar Servicio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-
                     <input type="hidden" id="editIdServicio" name="idServicio">
-
-                    <div class="text-center mb-3">
-                        <img id="editPreview" src="" style="width:100px;height:100px;object-fit:cover;border-radius:6px;border:1px solid #ccc;">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Cambiar Imagen (opcional)</label>
-                        <input type="file" class="form-control" name="imagenArchivo" id="imagenArchivoEdit" accept="image/*">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="editNombre" name="nombre" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea class="form-control" id="editDescripcion" name="descripcion" rows="3" required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Costo (S/)</label>
-                        <input type="number" class="form-control" id="editCosto" name="costo" step="0.01" required>
-                    </div>
-
+                    <div class="text-center mb-3"><img id="editPreview" src="" style="width:80px;height:80px;object-fit:cover;"></div>
+                    <div class="mb-3"><label>Imagen</label><input type="file" class="form-control" name="imagenArchivo"></div>
+                    <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" id="editNombre" name="nombre" required></div>
+                    <div class="mb-3"><label>Descripción</label><textarea class="form-control" id="editDescripcion" name="descripcion" required></textarea></div>
+                    <div class="mb-3"><label>Costo</label><input type="number" class="form-control" id="editCosto" name="costo" step="0.01" required></div>
                 </div>
-
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-warning">Actualizar</button>
+                    <button type="submit" class="btn btn-warning">Guardar</button>
                 </div>
-
             </form>
-
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="modalUsuarioCliente" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">Usuario Vinculado</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
+            <div class="modal-header bg-info text-white"><h5 class="modal-title">Info Usuario</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <p><strong>ID Usuario:</strong> <span id="usuarioId"></span></p>
-                <p><strong>Nombre Usuario:</strong> <span id="usuarioNombre"></span></p>
+                <p><strong>ID:</strong> <span id="usuarioId"></span></p>
+                <p><strong>Usuario:</strong> <span id="usuarioNombre"></span></p>
             </div>
-
         </div>
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
     function mostrarSeccion(id) {
-        document.querySelectorAll('.content section').forEach(sec => sec.style.display = 'none');
-        const section = document.getElementById(id);
-        if (section) section.style.display = 'block';
+        document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+        const sec = document.getElementById(id);
+        if(sec) sec.style.display = 'block';
+
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        const link = document.getElementById('link' + id.charAt(0).toUpperCase() + id.slice(1));
+        if(link) link.classList.add('active');
     }
 
-    document.getElementById("linkInicio").onclick = () => mostrarSeccion("inicio");
-    document.getElementById("linkServicios").onclick = () => mostrarSeccion("servicios");
-    document.getElementById("linkClientes").onclick = () => mostrarSeccion("clientes");
-
-    const params = new URLSearchParams(window.location.search);
-    mostrarSeccion(params.get("seccion") ?? "inicio");
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const seccion = params.get("seccion") || "inicio";
+        mostrarSeccion(seccion);
+    });
 
     function editarServicio(id) {
         fetch('/servicios/editar/' + id)
@@ -284,41 +356,17 @@
                 document.getElementById('editNombre').value = data.nombre;
                 document.getElementById('editDescripcion').value = data.descripcion;
                 document.getElementById('editCosto').value = data.costo;
-
-                document.getElementById('editPreview').src =
-                    (data.img ? '/uploads/servicios/' + data.img : '');
-
+                document.getElementById('editPreview').src = data.img ? '/uploads/servicios/' + data.img : '';
                 new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
             });
     }
 
-    document.getElementById("exportarPDF").onclick = () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.text("Listado de Servicios", 14, 20);
-
-        const table = document.querySelector("#tablaServicios");
-        const headers = [...table.querySelectorAll("thead th")].map(th => th.innerText);
-        const rows = [...table.querySelectorAll("tbody tr")].map(tr =>
-            [...tr.querySelectorAll("td")].map(td => td.innerText)
-        );
-
-        doc.autoTable({ head: [headers], body: rows, startY: 30 });
-        doc.save("servicios.pdf");
-    };
-
-    function verUsuario(idCliente) {
-        fetch('/clientes/usuario/' + idCliente)
+    function verUsuario(id) {
+        fetch('/clientes/usuario/' + id)
             .then(r => r.json())
             .then(data => {
-                if (data) {
-                    document.getElementById('usuarioId').textContent = data.idUsuario;
-                    document.getElementById('usuarioNombre').textContent = data.nombreUsuario;
-                } else {
-                    document.getElementById('usuarioId').textContent = "No asignado";
-                    document.getElementById('usuarioNombre').textContent = "No asignado";
-                }
+                document.getElementById('usuarioId').innerText = data ? data.idUsuario : '-';
+                document.getElementById('usuarioNombre').innerText = data ? data.nombreUsuario : '-';
                 new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
             });
     }

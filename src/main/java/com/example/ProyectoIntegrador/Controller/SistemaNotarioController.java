@@ -1,19 +1,20 @@
 package com.example.ProyectoIntegrador.Controller;
 
 import com.example.ProyectoIntegrador.Entity.Notario;
-import com.example.ProyectoIntegrador.Entity.Usuario;
 import com.example.ProyectoIntegrador.Entity.Servicio;
-import com.example.ProyectoIntegrador.Entity.Cliente;
-import com.example.ProyectoIntegrador.Repository.NotarioRepository;
-import com.example.ProyectoIntegrador.Repository.UsuarioRepository;
-import com.example.ProyectoIntegrador.Repository.ServicioRepository;
-import com.example.ProyectoIntegrador.Repository.ClienteRepository;
+import com.example.ProyectoIntegrador.Entity.Tramite; // <--- Importante
+import com.example.ProyectoIntegrador.Entity.Usuario;
+import com.example.ProyectoIntegrador.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SistemaNotarioController {
@@ -28,14 +29,24 @@ public class SistemaNotarioController {
     private ServicioRepository servicioRepository;
 
     @Autowired
+    private PagoRepository pagoRepository;
+
+    @Autowired
     private ClienteRepository clienteRepository;
 
+    // --- ESTA ES LA PIEZA QUE FALTABA ---
+    @Autowired
+    private TramiteRepository tramiteRepository;
+    // ------------------------------------
+
     @GetMapping("/SistemaNotario")
-    public String sistemaNotario(Authentication authentication, Model model) {
+    public String sistemaNotario(Authentication authentication, Model model,
+                                 @RequestParam(required = false) String seccion) {
 
         String nombreUsuario = authentication.getName();
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
 
+        // Lógica para mostrar el nombre del notario
         if (usuario != null && usuario.getRol() == Usuario.Rol.notario) {
             Notario notario = notarioRepository.findByUsuario(usuario).orElse(null);
             if (notario != null) {
@@ -45,10 +56,26 @@ public class SistemaNotarioController {
             }
         }
 
+        // 1. BANDEJA DE SOLICITUDES (Solo Pendientes)
+        List<Tramite> pendientes = tramiteRepository.findByEstado(Tramite.Estado.pendiente);
+        model.addAttribute("solicitudesPendientes", pendientes);
+
+// 2. SECCIÓN TRAMITES (Aquí cargamos los ACEPTADOS)
+// CORREGIDO: Buscamos 'aceptado' en lugar de 'en_proceso'
+        List<Tramite> aceptados = tramiteRepository.findByEstado(Tramite.Estado.aceptado);
+        model.addAttribute("tramitesEnProceso", aceptados);
+
+// 3. MAPA DE PAGOS
+        Map<Integer, Boolean> estadoPagos = new HashMap<>();
+        for (Tramite t : aceptados) { // Iteramos sobre la lista de aceptados
+            estadoPagos.put(t.getIdTramite(), pagoRepository.existsByTramite(t));
+        }
+        model.addAttribute("estadoPagos", estadoPagos);
+
         model.addAttribute("servicios", servicioRepository.findAll());
         model.addAttribute("servicio", new Servicio());
-
         model.addAttribute("clientes", clienteRepository.findAll());
+        model.addAttribute("seccion", seccion != null ? seccion : "inicio");
 
         return "SistemaNotario";
     }
