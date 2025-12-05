@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema de Gestión Notarial</title>
+
+    <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tus estilos -->
     <link href="/css/stylesSistemaNotario.css" rel="stylesheet">
 
     <style>
@@ -38,7 +42,6 @@
         <p>Selecciona una opción del menú lateral para comenzar.</p>
     </section>
 
-    <!-- Gestión de Servicios -->
     <section id="servicios" class="mt-5" style="display: none;">
         <h2 class="mb-3">Gestión de Servicios</h2>
 
@@ -103,7 +106,6 @@
         </div>
     </section>
 
-    <!-- Gestión de Clientes -->
 
     <section id="clientes" class="mt-5" style="display: none;">
         <h2 class="mb-3">Gestión de Clientes</h2>
@@ -139,7 +141,6 @@
 
 </div>
 
-<!-- Modal Agregar Servicio -->
 <div class="modal fade" id="modalAgregarServicio" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -184,7 +185,7 @@
     </div>
 </div>
 
-<!-- Modal Editar Servicio -->
+
 <div class="modal fade" id="modalEditarServicio" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -237,7 +238,6 @@
     </div>
 </div>
 
-<!-- Modal Ver Usuario -->
 
 <div class="modal fade" id="modalUsuarioCliente" tabindex="-1">
     <div class="modal-dialog">
@@ -257,7 +257,7 @@
     </div>
 </div>
 
-<!-- Scripts -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -286,7 +286,8 @@
                 document.getElementById('editCosto').value = data.costo;
 
                 document.getElementById('editPreview').src =
-                data.img ? '/uploads/servicios/' + data.img : ''
+                    (data.img ? '/uploads/servicios/' + data.img : '');
+
                 new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
             });
     }
@@ -308,18 +309,18 @@
     };
 
     function verUsuario(idCliente) {
-    fetch('/clientes/usuario/' + idCliente)
-        .then(r => r.json())
-        .then(data => {
-            if (data) {
-                document.getElementById('usuarioId').textContent = data.idUsuario;
-                document.getElementById('usuarioNombre').textContent = data.nombreUsuario;
-            } else {
-                document.getElementById('usuarioId').textContent = "No asignado";
-                document.getElementById('usuarioNombre').textContent = "No asignado";
-            }
-            new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
-        });
+        fetch('/clientes/usuario/' + idCliente)
+            .then(r => r.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById('usuarioId').textContent = data.idUsuario;
+                    document.getElementById('usuarioNombre').textContent = data.nombreUsuario;
+                } else {
+                    document.getElementById('usuarioId').textContent = "No asignado";
+                    document.getElementById('usuarioNombre').textContent = "No asignado";
+                }
+                new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
+            });
     }
 </script>
 

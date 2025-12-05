@@ -1,7 +1,6 @@
 package com.example.ProyectoIntegrador.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,13 +11,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-        private final  CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
     @Autowired
     public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
         this.successHandler = successHandler;
     }
-   
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -27,8 +25,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
+
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; " +
+                                        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; " +
+                                        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; " +
+                                        "img-src 'self' data: https://cdn.jsdelivr.net https://images.pexels.com https://upload.wikimedia.org; " +
+                                        "font-src 'self' https://fonts.gstatic.com data:; " +
+                                        "connect-src 'self' https://cdn.jsdelivr.net; " +
+                                        "frame-ancestors 'self'; "
+                        ))
+                        .frameOptions(frame -> frame.sameOrigin())
+                        .httpStrictTransportSecurity(hsts -> hsts.disable())
+                        .cacheControl(cache -> cache.disable())
+                        .addHeaderWriter((req, res) ->
+                                res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()"))
+                )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/Login", "/login", "/registrarse", "/Registrarse",
@@ -39,13 +56,14 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/Login")
                         .loginProcessingUrl("/login")
-                        // .defaultSuccessUrl("/SistemaNotario", false) // <-- Eliminado
-                        .successHandler(successHandler) // <-- AÑADIDO 
+                        .successHandler(successHandler)
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/Login")
