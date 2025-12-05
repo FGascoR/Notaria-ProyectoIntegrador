@@ -1,84 +1,45 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notaría Virtual</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Notaría</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/stylesPagina.css">
-    <style>
-        /* Estilos Sidebar Mis Solicitudes */
-        .sidebar-right {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1050;
-            top: 0;
-            right: 0;
-            background-color: #1f1f1f;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.5);
-        }
-        .sidebar-right .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-            color: #f1f1f1;
-            text-decoration: none;
-        }
-        .sidebar-content { padding: 20px; color: white; }
-        .tramite-card {
-            background: #333;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #daa520;
-        }
-        .btn-gold { background-color: #b8860b; color: white; border: none; }
-        .btn-gold:hover { background-color: #996515; color: white; }
-    </style>
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Notaría Bances</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav ms-auto align-items-center">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servicios</a>
                     <ul class="dropdown-menu">
                         <li th:each="servicio : ${servicios}">
-                            <a class="dropdown-item" th:text="${servicio.nombre}" th:href="@{'#servicio-' + ${servicio.idServicio}}"></a>
+                            <a class="dropdown-item" th:text="${servicio.nombre}"
+                               th:href="@{'#servicio-' + ${servicio.idServicio}}"></a>
                         </li>
                     </ul>
                 </li>
 
+                <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
                 <li class="nav-item"><a class="nav-link" href="#notario">Notario</a></li>
-
                 <li class="nav-item ms-3" sec:authorize="!isAuthenticated()">
-                    <a href="/Login" class="btn btn-warning btn-sm">Iniciar Sesión</a>
+                    <a href="/Login" class="btn btn-warning">Inicio de Sesión</a>
                 </li>
 
                 <li class="nav-item ms-3" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-outline-warning btn-sm">Cerrar Sesión</button>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-gold">Cerrar Sesión</button>
                     </form>
                 </li>
 
-                <li class="nav-item ms-3" sec:authorize="hasRole('CLIENTE')">
-                    <button class="btn btn-gold btn-sm" onclick="openNav()">📂 Mis Solicitudes</button>
-                </li>
             </ul>
         </div>
     </div>
@@ -87,56 +48,79 @@
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://images.pexels.com/photos/8112201/pexels-photo-8112201.jpeg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Sala de atención">
-            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+            <img src="https://images.pexels.com/photos/8112201/pexels-photo-8112201.jpeg" class="d-block w-100" alt="Sala de atención">
+
+            <div class="carousel-caption d-none d-md-block">
                 <h2>Bienvenido a la Notaría Virtual</h2>
                 <p>Trámites rápidos, seguros y en línea</p>
-                <a href="#servicios" class="btn btn-gold">Ver Servicios</a>
+                <a href="#servicios" class="btn btn-gold btn-lg">Ver Servicios</a>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.pexels.com/photos/7876093/pexels-photo-7876093.jpeg" class="d-block w-100" alt="Notaría">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>Atención Personalizada</h2>
+                <p>Confianza y experiencia para tu seguridad legal</p>
             </div>
         </div>
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
 </div>
+
 
 <div class="divisor"></div>
 
-<h2 class="text-center mt-5" id="notario">Nuestro Notario</h2>
-<section class="sectionNotario container my-4">
-    <div class="row align-items-center">
-        <div class="col-md-4 text-center">
-            <img src="/img/Screenshot 2025-07-20 215628.png" class="img-fluid rounded-circle border border-warning border-4" style="max-width: 200px;">
-        </div>
-        <div class="col-md-8">
-            <h3>Dr. Luis Bances Oliden</h3>
-            <hr class="text-warning opacity-100" style="width: 100px; height: 3px;">
-            <p><strong>Colegiado:</strong> N° 25487</p>
-            <p class="text-muted">
-                Comprometido con la ética, la transparencia y la seguridad jurídica.
-                Brindamos asesoría integral para formalizar sus actos legales con la mayor eficiencia.
-            </p>
-        </div>
+<h2 class="text-center mt-4" id="notario">Información Notario</h2>
+
+<section id="informacionnotario" class="sectionNotario">
+    <div class="forma-borde"></div>
+    <div class="forma">
+        <img src="img/Screenshot 2025-07-20 215628.png" class="imagenfo">
+    </div>
+
+    <div class="contenidoNotario">
+        <h2><em>Notario</em></h2><hr>
+
+        <p class="pr">
+            <strong>Nombre:</strong> Luis Bances Oliden<br>
+            <strong>Correo:</strong> luisb@gmail.com<br>
+            <strong>Colegiado:</strong> N° 25487<br><br>
+
+            El Notario Luis Bances Oliden se caracteriza por su compromiso con la ética, la
+            transparencia y la correcta gestión documental. Cuenta con amplia experiencia en
+            procedimientos notariales vinculados a certificaciones, legalizaciones y asesoría legal,
+            brindando un acompañamiento sólido y profesional a todos los clientes que requieren
+            formalizar actos jurídicos con validez y seguridad.
+        </p>
     </div>
 </section>
 
 <div class="divisor"></div>
 
 <div class="container my-5" id="servicios">
-    <h2 class="text-center mb-4">Servicios Disponibles</h2>
-
-    <div th:if="${param.solicitud}" class="alert alert-success text-center">¡Solicitud enviada correctamente!</div>
-    <div th:if="${param.pago}" class="alert alert-success text-center">¡Pago realizado con éxito! El proceso ha sido habilitado.</div>
-
+    <h2 class="text-center mb-4">Servicios</h2>
     <div class="row g-4">
         <div class="col-md-4 d-flex" th:each="servicio : ${servicios}">
-            <div class="card shadow flex-fill border-0">
-                <img class="card-img-top" th:src="@{'/uploads/servicios/' + ${servicio.img}}" style="height:200px; object-fit:cover;" alt="Servicio">
-                <div class="card-body d-flex flex-column text-center">
-                    <h5 class="card-title fw-bold" th:text="${servicio.nombre}"></h5>
-                    <p class="card-text text-muted small" th:text="${servicio.descripcion}"></p>
-                    <div class="mt-auto">
-                        <h4 class="text-success fw-bold mb-3">S/ <span th:text="${#numbers.formatDecimal(servicio.costo, 1, 2)}"></span></h4>
-                        <button class="btn btn-gold w-100" th:attr="onclick=|solicitarServicio('${servicio.idServicio}', '${servicio.nombre}')|">
-                            Solicitar Trámite
-                        </button>
+            <div class="card shadow flex-fill">
+                <img class="card-img-top"
+                     th:src="@{'/uploads/servicios/' + ${servicio.img}}"
+                     alt="Imagen del servicio"
+                     style="height:230px;object-fit:cover;">
+                <div class="card-body d-flex flex-column justify-content-between text-center">
+                    <div>
+                        <h4 class="card-title" th:text="${servicio.nombre}"></h4>
+                        <p class="card-text" th:text="${servicio.descripcion}"></p>
+                    </div>
+                    <div>
+                        <p class="card-text fw-bold text-success mb-3">
+                            S/ <span th:text="${#numbers.formatDecimal(servicio.costo, 1, 2)}"></span>
+                        </p>
+                        <button class="btn btn-gold w-100 fw-bold">Solicitar trámite</button>
                     </div>
                 </div>
             </div>
@@ -144,136 +128,18 @@
     </div>
 </div>
 
+
 <footer>
-    <div class="container text-center py-4 text-white bg-dark mt-5">
-        <p class="m-0">&copy; 2025 Notaría Bances. Todos los derechos reservados.</p>
+    <div class="container">
+        <p>&copy; Todos los derechos reservados.</p>
     </div>
 </footer>
 
-<a href="https://wa.me/51999999999" target="_blank" style="position:fixed;bottom:20px;right:20px;z-index:1000;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:60px;">
+<a href="https://wa.me/51999999999" class="whatsapp" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"
+         style="width:60px;height:60px;position:fixed;bottom:20px;right:20px;z-index:1000;">
 </a>
 
-<div id="mySidebar" class="sidebar-right">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div class="sidebar-content">
-        <h3>Mis Solicitudes</h3>
-        <hr>
-        <div th:if="${misTramites == null or misTramites.empty}">
-            <p class="text-muted text-center">No tienes trámites registrados.</p>
-        </div>
-
-        <div th:each="t : ${misTramites}" class="tramite-card">
-            <h5 th:text="${t.servicio.nombre}" class="text-warning"></h5>
-            <small class="text-secondary" th:text="'Fecha: ' + ${t.fechaInicio}"></small>
-            <div class="mt-2">
-                Estado:
-                <span th:text="${t.estado}"
-                      th:class="${t.estado.name() == 'aceptado' ? 'badge bg-success' : (t.estado.name() == 'rechazado' ? 'badge bg-danger' : 'badge bg-warning text-dark')}">
-                </span>
-            </div>
-            <p class="mt-2 small text-white-50" th:text="${t.observaciones}"></p>
-
-            <div th:if="${t.estado.name() == 'aceptado'}" class="mt-3 d-grid gap-2">
-                <div th:unless="${estadoPagos != null and estadoPagos.containsKey(t.idTramite) and estadoPagos.get(t.idTramite)}">
-                    <button class="btn btn-success btn-sm w-100"
-                            th:attr="onclick=|abrirModalPago('${t.idTramite}', '${t.servicio.nombre}', '${t.servicio.costo}')|">
-                        Realizar Pago 💳
-                    </button>
-                </div>
-
-                <div th:if="${estadoPagos != null and estadoPagos.containsKey(t.idTramite) and estadoPagos.get(t.idTramite)}">
-                    <div class="alert alert-success p-1 text-center mb-2" style="font-size: 0.8rem;">
-                        <i class="bi bi-check-circle-fill"></i> ¡Pago Confirmado!
-                    </div>
-
-                    <a th:href="@{'/proceso/cliente/' + ${t.idTramite}}"
-                       class="btn btn-info btn-sm fw-bold text-white w-100">
-                        Ir al Panel de Trámite 📂
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalSolicitud" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form th:action="@{/tramite/solicitar}" method="post">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">Nueva Solicitud</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="modalIdServicio" name="idServicio">
-                    <h5 id="modalNombreServicio" class="text-gold mb-3"></h5>
-                    <div class="mb-3">
-                        <label>Detalles adicionales:</label>
-                        <textarea class="form-control" name="descripcion" rows="3" required placeholder="Describa su requerimiento..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-gold">Enviar Solicitud</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalPago" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form th:action="@{/pago/procesar}" method="post">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Realizar Pago Seguro</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <input type="hidden" id="pagoIdTramite" name="idTramite">
-                    <h5 class="mb-1">Servicio: <strong id="pagoNombreServicio"></strong></h5>
-                    <h2 class="text-success my-3">S/ <span id="pagoMonto"></span></h2>
-
-                    <div class="form-floating mb-3 text-start">
-                        <select class="form-select" name="metodoPago" required>
-                            <option value="TARJETA">Tarjeta de Crédito / Débito</option>
-                            <option value="YAPE">Yape / Plin</option>
-                            <option value="TRANSFERENCIA">Transferencia Bancaria</option>
-                        </select>
-                        <label>Método de Pago</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success w-100">Confirmar Pago</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script th:inline="javascript">
-    function openNav() { document.getElementById("mySidebar").style.width = "350px"; }
-    function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
-
-    function solicitarServicio(id, nombre) {
-        var isAuthenticated = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
-        if (!isAuthenticated) {
-            window.location.href = '/Login';
-        } else {
-            document.getElementById('modalIdServicio').value = id;
-            document.getElementById('modalNombreServicio').innerText = nombre;
-            new bootstrap.Modal(document.getElementById('modalSolicitud')).show();
-        }
-    }
-
-    function abrirModalPago(id, nombre, costo) {
-        document.getElementById('pagoIdTramite').value = id;
-        document.getElementById('pagoNombreServicio').innerText = nombre;
-        document.getElementById('pagoMonto').innerText = parseFloat(costo).toFixed(2);
-        new bootstrap.Modal(document.getElementById('modalPago')).show();
-    }
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

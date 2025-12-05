@@ -22,8 +22,8 @@ public class Tramite {
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "idServicio", nullable = false)
-    private Servicio servicio;
+    @JoinColumn(name = "idTipoTramite", nullable = false)
+    private TipoTramite tipoTramite;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "fechaInicio")
@@ -37,12 +37,6 @@ public class Tramite {
     private String observaciones;
 
     public enum Estado {
-        pendiente, en_proceso, completado, rechazado, aceptado
-    }
-
-    // Asigna la fecha automáticamente antes de guardar
-    @PrePersist
-    public void prePersist() {
-        this.fechaInicio = new Date();
+        pendiente, en_proceso, completado, rechazado
     }
 }
