@@ -28,7 +28,7 @@ public class TramiteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    // Guardar solicitud del Cliente
+    
     @PostMapping("/tramite/solicitar")
     public String solicitarTramite(@RequestParam("idServicio") Integer idServicio,
                                    @RequestParam("descripcion") String descripcion,
@@ -53,7 +53,7 @@ public class TramiteController {
         return "redirect:/Pagina?solicitud=exito";
     }
 
-    // Gestionar estado por el Notario
+    
     @GetMapping("/tramite/cambiarEstado/{id}/{estado}")
     public String cambiarEstado(@PathVariable Integer id, @PathVariable String estado) {
         Tramite tramite = tramiteRepository.findById(id).orElse(null);
@@ -62,7 +62,7 @@ public class TramiteController {
                 tramite.setEstado(Tramite.Estado.valueOf(estado));
                 tramiteRepository.save(tramite);
             } catch (IllegalArgumentException e) {
-                // Estado no válido
+                
             }
         }
         return "redirect:/SistemaNotario?seccion=solicitudes";

@@ -3,7 +3,7 @@ package com.example.ProyectoIntegrador.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Objects; // <-- Importante
+import java.util.Objects;
 
 @Entity
 @Table(name = "Servicio")
@@ -20,7 +20,7 @@ public class Servicio {
     private String img;
 
     @Column(name = "nombre", length = 100)
-    private String nombre; // Asumimos que este es la Clave de Negocio
+    private String nombre;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -36,9 +36,7 @@ public class Servicio {
         Servicio servicio = (Servicio) o;
 
 
-        if (this.nombre == null || servicio.nombre == null) {
-            return false;
-        }
+        
         return Objects.equals(nombre, servicio.nombre);
     }
 

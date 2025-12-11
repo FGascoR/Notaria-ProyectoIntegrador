@@ -34,10 +34,10 @@ public class SistemaNotarioController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    // --- ESTA ES LA PIEZA QUE FALTABA ---
+    
     @Autowired
     private TramiteRepository tramiteRepository;
-    // ------------------------------------
+   
 
     @GetMapping("/SistemaNotario")
     public String sistemaNotario(Authentication authentication, Model model,
@@ -46,7 +46,7 @@ public class SistemaNotarioController {
         String nombreUsuario = authentication.getName();
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario).orElse(null);
 
-        // Lógica para mostrar el nombre del notario
+        
         if (usuario != null && usuario.getRol() == Usuario.Rol.notario) {
             Notario notario = notarioRepository.findByUsuario(usuario).orElse(null);
             if (notario != null) {
@@ -56,18 +56,17 @@ public class SistemaNotarioController {
             }
         }
 
-        // 1. BANDEJA DE SOLICITUDES (Solo Pendientes)
+        
         List<Tramite> pendientes = tramiteRepository.findByEstado(Tramite.Estado.pendiente);
         model.addAttribute("solicitudesPendientes", pendientes);
 
-// 2. SECCIÓN TRAMITES (Aquí cargamos los ACEPTADOS)
-// CORREGIDO: Buscamos 'aceptado' en lugar de 'en_proceso'
+
         List<Tramite> aceptados = tramiteRepository.findByEstado(Tramite.Estado.aceptado);
         model.addAttribute("tramitesEnProceso", aceptados);
 
-// 3. MAPA DE PAGOS
+
         Map<Integer, Boolean> estadoPagos = new HashMap<>();
-        for (Tramite t : aceptados) { // Iteramos sobre la lista de aceptados
+        for (Tramite t : aceptados) {
             estadoPagos.put(t.getIdTramite(), pagoRepository.existsByTramite(t));
         }
         model.addAttribute("estadoPagos", estadoPagos);

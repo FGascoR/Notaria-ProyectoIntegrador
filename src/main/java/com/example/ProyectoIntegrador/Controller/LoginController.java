@@ -22,5 +22,5 @@ public class LoginController {
         return "Login";
     }
 
-    // IMPORTANTE: Aquí NO debe haber ningún método para "/Pagina"
+    
 }
