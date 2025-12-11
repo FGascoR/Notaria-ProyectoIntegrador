@@ -31,8 +31,7 @@ public class ProcesoController {
         Tramite tramite = tramiteRepository.findById(idTramite).orElse(null);
         if (tramite == null) return "redirect:/Pagina";
 
-        // Validación de seguridad simple: asegurar que el usuario es el dueño
-        // (Omitida por brevedad, pero recomendable agregar)
+        
 
         cargarDatos(model, tramite, auth);
         return "SistemaCliente";

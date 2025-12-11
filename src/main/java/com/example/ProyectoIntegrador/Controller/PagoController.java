@@ -1,6 +1,6 @@
 package com.example.ProyectoIntegrador.Controller;
 
-import com.example.ProyectoIntegrador.Entity.Cliente;
+
 import com.example.ProyectoIntegrador.Entity.Pago;
 import com.example.ProyectoIntegrador.Entity.Tramite;
 import com.example.ProyectoIntegrador.Repository.PagoRepository;
@@ -32,9 +32,9 @@ public class PagoController {
             pago.setTramite(tramite);
             pago.setCliente(tramite.getCliente());
             pago.setFecha(new Date());
-            pago.setHora(new Date()); // O usa LocalTime si cambiaste la entidad
+            pago.setHora(new Date());
 
-            // Asumimos que el monto es el costo del servicio
+            
             pago.setMontoTotal(tramite.getServicio().getCosto());
 
             pagoRepository.save(pago);

@@ -1,4 +1,5 @@
 package com.example.ProyectoIntegrador.SeleniumTests;
+
 import com.example.ProyectoIntegrador.Entity.Usuario;
 import com.example.ProyectoIntegrador.Repository.UsuarioRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -8,17 +9,27 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder; // Necesario para crear usuario válido
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class LoginSeleniumTest {
+
     private WebDriver driver;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Inyectamos para guardar la clave correctamente
 
     private final String baseUrl = "http://localhost:8080/Login";
 
@@ -26,10 +37,12 @@ public class LoginSeleniumTest {
     public void setUp() {
         driver = new ChromeDriver();
 
-        if (!usuarioRepository.findByNombreUsuario("UsuarioTest").isPresent()) {
+        
+        if (!usuarioRepository.findByNombreUsuario("UsuarioTestSelenium").isPresent()) {
             Usuario usuario = new Usuario();
-            usuario.setNombreUsuario("UsuarioTest");
-            usuario.setContrasena("{noop}1234");
+            usuario.setNombreUsuario("UsuarioTestSelenium");
+            
+            usuario.setContrasena(passwordEncoder.encode("1234")); 
             usuario.setRol(Usuario.Rol.notario);
             usuarioRepository.save(usuario);
         }
@@ -38,21 +51,31 @@ public class LoginSeleniumTest {
     }
 
     @Test
-    public void testLoginAndRedirect() throws InterruptedException {
-        WebElement username = driver.findElement(By.name("username"));
-        WebElement password = driver.findElement(By.name("password"));
-        WebElement submit = driver.findElement(By.cssSelector("button[type='submit']"));
+    public void testLoginYRedireccionCorrecta() {
+        
+        WebElement usernameInput = driver.findElement(By.name("username"));
+        WebElement passwordInput = driver.findElement(By.name("password"));
+        
+        WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
 
-        username.sendKeys("UsuarioTest");
-        password.sendKeys("1234");
-        submit.click();
+        
+        usernameInput.sendKeys("UsuarioTestSelenium");
+        passwordInput.sendKeys("1234");
+        submitButton.click();
 
-        Thread.sleep(2000);
+        
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        
+        
+        wait.until(ExpectedConditions.urlContains("/SistemaNotario"));
 
-        assertEquals("http://localhost:8080/SistemaNotario", driver.getCurrentUrl());
+        
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("/SistemaNotario"), "Debería redirigir a /SistemaNotario");
 
-        WebElement nombreNotario = driver.findElement(By.tagName("strong"));
-        assertEquals("UsuarioTest", nombreNotario.getText());
+        
+        WebElement bienvenidaUsuario = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1/strong")));
+        assertEquals("UsuarioTestSelenium", bienvenidaUsuario.getText());
     }
 
     @AfterEach
@@ -60,5 +83,6 @@ public class LoginSeleniumTest {
         if (driver != null) {
             driver.quit();
         }
+        
     }
 }

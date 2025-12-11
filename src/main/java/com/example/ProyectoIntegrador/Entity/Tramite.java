@@ -3,7 +3,7 @@ package com.example.ProyectoIntegrador.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate; // Usaremos LocalDate para mejor manejo de fechas
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Tramite")
@@ -20,13 +20,13 @@ public class Tramite {
     @JoinColumn(name = "idCliente", nullable = false)
     private Cliente cliente;
 
-    // CAMBIO: Usamos Servicio en lugar de TipoTramite
+    
     @ManyToOne
     @JoinColumn(name = "idServicio", nullable = false)
     private Servicio servicio;
 
     @Column(name = "fechaInicio")
-    private LocalDate fechaInicio; // Cambiado a LocalDate
+    private LocalDate fechaInicio;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
@@ -36,7 +36,7 @@ public class Tramite {
     private String observaciones;
 
     public enum Estado {
-        pendiente, en_proceso, completado, rechazado, aceptado // <--- Agregado
+        pendiente, en_proceso, completado, rechazado, aceptado
     }
 
     @PrePersist

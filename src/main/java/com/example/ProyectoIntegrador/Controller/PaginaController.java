@@ -21,7 +21,7 @@ public class PaginaController {
     @Autowired private ClienteRepository clienteRepository;
     @Autowired private TramiteRepository tramiteRepository;
     @Autowired private ServicioRepository servicioRepository;
-    @Autowired private PagoRepository pagoRepository; // Inyectamos esto
+    @Autowired private PagoRepository pagoRepository;
 
     @GetMapping("/Pagina")
     public String inicio(Model model, Authentication authentication) {

@@ -1,48 +1,70 @@
 package com.example.ProyectoIntegrador.MockitoTest;
 
+import com.example.ProyectoIntegrador.Controller.ClienteController;
 import com.example.ProyectoIntegrador.Entity.Cliente;
+import com.example.ProyectoIntegrador.Entity.Usuario;
 import com.example.ProyectoIntegrador.Repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ClienteRepositoryMockitoTest {
+public class ClienteRepositoryMockitoTest { // Podrías renombrarlo a ClienteControllerTest
 
     @Mock
-    private ClienteRepository clienteRepository;
+    private ClienteRepository clienteRepository; // El simulacro
+
+    @InjectMocks
+    private ClienteController clienteController; // Quien usa el simulacro
 
     @Test
-    void testFindAllReturnsList() {
-        // Creamos mocks de Cliente (no usamos setters/getters reales)
-        Cliente c1 = Mockito.mock(Cliente.class);
-        Cliente c2 = Mockito.mock(Cliente.class);
+    void testObtenerUsuarioCliente_EncuentraCliente() {
+        
+        Integer idCliente = 1;
+        
+        
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setIdUsuario(10);
+        usuarioMock.setNombreUsuario("usuarioPrueba");
 
-        when(clienteRepository.findAll()).thenReturn(Arrays.asList(c1, c2));
+        
+        Cliente clienteMock = new Cliente();
+        clienteMock.setIdCliente(idCliente);
+        clienteMock.setUsuario(usuarioMock);
 
-        List<Cliente> result = clienteRepository.findAll();
+       
+        when(clienteRepository.findById(idCliente)).thenReturn(Optional.of(clienteMock));
 
-        assertNotNull(result, "El resultado de findAll() no debe ser null");
-        assertEquals(2, result.size(), "La lista debería tener 2 elementos mockeados");
-        verify(clienteRepository, times(1)).findAll();
+        
+        Object resultado = clienteController.obtenerUsuarioCliente(idCliente);
+
+        
+        assertNotNull(resultado, "El controlador no debería devolver null");
+        
+        
+        verify(clienteRepository, times(1)).findById(idCliente);
+        
+        
     }
 
     @Test
-    void testFindById() {
-        Cliente c = Mockito.mock(Cliente.class);
-        when(clienteRepository.findById(1)).thenReturn(Optional.of(c));
+    void testObtenerUsuarioCliente_NoEncuentraCliente() {
+        
+        Integer idNoExistente = 99;
+        when(clienteRepository.findById(idNoExistente)).thenReturn(Optional.empty());
 
-        Optional<Cliente> opt = clienteRepository.findById(1);
-        assertTrue(opt.isPresent(), "findById(1) debería devolver Optional con valor");
-        verify(clienteRepository, times(1)).findById(1);
+        
+        Object resultado = clienteController.obtenerUsuarioCliente(idNoExistente);
+
+        
+        assertNull(resultado, "Debería devolver null si el cliente no existe");
+        verify(clienteRepository, times(1)).findById(idNoExistente);
     }
 }
