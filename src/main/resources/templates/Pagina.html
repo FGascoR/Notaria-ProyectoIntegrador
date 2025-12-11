@@ -5,47 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notaría</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/stylesPagina.css">
+
     <style>
-        /* Estilos para el Sidebar derecho */
-        .sidebar-right {
-            height: 100%;
-            width: 0;
+        body {
+            padding-top: 76px;
+        }
+
+        .navbar {
             position: fixed;
-            z-index: 1050;
             top: 0;
-            right: 0;
-            background-color: #1f1f1f;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.5);
-        }
-        .sidebar-right .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-            color: #f1f1f1;
-            text-decoration: none;
-        }
-        .sidebar-content {
-            padding: 20px;
-            color: white;
-        }
-        .tramite-card {
-            background: #333;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #daa520;
+            width: 100%;
+            z-index: 1030;
+            transition: top 0.4s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
             <span class="navbar-toggler-icon"></span>
@@ -80,7 +61,6 @@
                 <li class="nav-item ms-3" sec:authorize="hasRole('CLIENTE')">
                     <a href="#" class="nav-link btn-outline-gold" onclick="openNav()">Mis Solicitudes</a>
                 </li>
-
             </ul>
         </div>
     </div>
@@ -134,9 +114,71 @@
     </div>
 </div>
 
-<footer>
+<div class="divisor"></div>
+
+<section id="notario" class="sectionNotario">
+    <div class="forma-borde"></div>
+    <div class="forma">
+        <img src="img/notario.jpg" class="imagenfo" alt="Foto del Notario">
+    </div>
+
+    <div class="contenidoNotario">
+        <h2><em>Nuestro Notario</em></h2><hr>
+
+        <p class="pr">
+            El <strong>Dr. Luis Bances</strong> es un profesional con más de 20 años de trayectoria garantizando la seguridad jurídica en cada trámite. Egresado con honores y especializado en Derecho Civil y Registral, lidera nuestra notaría con un enfoque moderno y eficiente.
+            <br><br>
+            Su compromiso es brindar confianza y transparencia, combinando la ética tradicional con herramientas digitales innovadoras para agilizar sus procesos legales.
+        </p>
+
+        <div class="mt-4">
+        </div>
+    </div>
+</section>
+<div class="divisor"></div>
+
+<footer class="footer-notaria text-white mt-auto pt-5 pb-3">
     <div class="container">
-        <p>&copy; Todos los derechos reservados.</p>
+        <div class="row align-items-start">
+            <div class="col-md-3 mb-4 text-center text-md-start">
+                <div class="mb-2" style="font-size: 2rem; color: #daa520;">
+                    <i class="bi bi-building-fill-check"></i>
+                </div>
+                <p class="small opacity-75">Notaría & Servicios Legales</p>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="footer-title">Información</h6>
+                <ul class="list-unstyled small footer-list">
+                    <li><a href="#" class="footer-link">Inicio</a></li>
+                    <li><a href="#" class="footer-link">Servicios Notariales</a></li>
+                    <li><a href="#" class="footer-link">Trámites</a></li>
+                    <li><a href="#" class="footer-link">Política de Privacidad</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="footer-title">Contáctanos</h6>
+                <ul class="list-unstyled small footer-list">
+                    <li><i class="bi bi-geo-alt-fill me-2 text-gold"></i> Av. Principal 123, Lima</li>
+                    <li><i class="bi bi-envelope-fill me-2 text-gold"></i> contacto@notaria.com</li>
+                    <li><i class="bi bi-telephone-fill me-2 text-gold"></i> (01) 555-0909</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4 text-center text-md-start">
+                <h6 class="footer-title">Síguenos</h6>
+                <div class="d-flex gap-3 mt-2 justify-content-center justify-content-md-start">
+                    <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="footer-divider">
+        <p class="text-center small mt-3 mb-0">Notaría Digital – Todos los derechos reservados © 2025</p>
     </div>
 </footer>
 
@@ -163,7 +205,6 @@
             </p>
 
             <div th:if="${t.estado.name() == 'aceptado'}" class="mt-2">
-
                 <div th:unless="${estadoPagos != null and estadoPagos.containsKey(t.idTramite) and estadoPagos.get(t.idTramite)}">
                     <button class="btn btn-success btn-sm w-100"
                             th:attr="onclick=|abrirModalPago('${t.idTramite}', '${t.servicio.nombre}', '${t.servicio.costo}')|">
@@ -175,7 +216,6 @@
                     <div class="alert alert-success p-1 text-center mb-2" style="font-size: 0.8rem;">
                         <i class="bi bi-check-circle-fill"></i> ¡Pago Confirmado!
                     </div>
-
                     <a th:href="@{'/proceso/cliente/' + ${t.idTramite}}"
                        class="btn btn-info btn-sm fw-bold text-white w-100">
                         Ir al Panel de Trámite 📂
@@ -197,7 +237,6 @@
                 <div class="modal-body">
                     <input type="hidden" id="modalIdServicio" name="idServicio">
                     <h5 id="modalNombreServicio" class="mb-3 text-gold"></h5>
-
                     <div class="mb-3">
                         <label class="form-label">Describa lo que necesita:</label>
                         <textarea class="form-control" name="descripcion" rows="4" required placeholder="Ej: Necesito legalizar una copia de mi título..."></textarea>
@@ -222,12 +261,10 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="pagoIdTramite" name="idTramite">
-
                     <div class="text-center mb-4">
                         <h5>Servicio: <strong id="pagoNombreServicio"></strong></h5>
                         <h3 class="text-success">Total: S/ <span id="pagoMonto"></span></h3>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Seleccione Método de Pago:</label>
                         <select class="form-select" name="metodoPago" required>
@@ -249,6 +286,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script th:inline="javascript">
+    let lastScrollTop = 0;
+    const navbar = document.getElementById("mainNavbar");
+
+    window.addEventListener("scroll", function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop === 0) {
+            navbar.style.top = "0";
+        }
+        else if (scrollTop < lastScrollTop) {
+            navbar.style.top = "0";
+        }
+        else {
+            navbar.style.top = "-80px";
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+
     function openNav() {
         document.getElementById("mySidebar").style.width = "350px";
     }
@@ -258,7 +314,6 @@
     }
 
     function solicitarServicio(id, nombre) {
-        // Obtenemos el estado de autenticación desde Thymeleaf
         var isAuthenticated = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
 
         if (!isAuthenticated) {
@@ -275,7 +330,6 @@
         document.getElementById('pagoIdTramite').value = id;
         document.getElementById('pagoNombreServicio').innerText = nombre;
         document.getElementById('pagoMonto').innerText = parseFloat(costo).toFixed(2);
-
         new bootstrap.Modal(document.getElementById('modalPago')).show();
     }
 </script>
