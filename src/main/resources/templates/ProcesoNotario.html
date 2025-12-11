@@ -1,90 +1,167 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta http-equiv="refresh" content="20">
+  <meta http-equiv="refresh" content="30">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gestión de Proceso - Notario</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
-    body { background-color: #e9ecef; overflow-x: hidden; }
-    .sidebar-info { min-height: 100vh; background-color: #2c3e50; color: white; padding: 25px; }
-    .chat-container { height: 65vh; overflow-y: scroll; background: #ffffff; border: 1px solid #ced4da; padding: 20px; border-radius: 5px;}
-    .msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 0.95rem; }
-    .msg-me { background-color: #0d6efd; color: white; margin-left: auto; text-align: right; border-bottom-right-radius: 2px; }
-    .msg-other { background-color: #f1f3f5; color: #212529; margin-right: auto; border-bottom-left-radius: 2px; }
+    body { background-color: #f4f6f9; overflow-x: hidden; height: 100vh; font-family: 'Segoe UI', sans-serif; }
+
+    .sidebar-info {
+        height: 100vh;
+        background-color: #000; /* Fondo Negro */
+        color: #fff;
+        padding: 25px;
+        overflow-y: auto;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    }
+
+    .text-gold { color: #b8860b !important; }
+
+    .text-label { color: #d0d0d0 !important; font-weight: 600; letter-spacing: 0.5px; }
+    .text-light-gray { color: #e0e0e0 !important; }
+
+    .btn-gold { background-color: #b8860b; color: white; border: none; font-weight: 600; }
+    .btn-gold:hover { background-color: #996515; color: white; }
+
+    .card-dark {
+        background-color: #1a1a1a;
+        border: 1px solid #444;
+        color: #fff;
+    }
+
+    .file-item {
+        background: #2a2a2a; /* Un poco más claro que el fondo */
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+        text-decoration: none;
+        color: #e0e0e0; /* Texto claro */
+        border-left: 3px solid transparent;
+        border: 1px solid #444;
+    }
+    .file-item:hover {
+        background: #333;
+        color: #b8860b;
+        border-left: 3px solid #b8860b;
+    }
+
+    .chat-area { height: 100vh; display: flex; flex-direction: column; background: #f4f6f9; }
+    .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .msg { margin-bottom: 15px; padding: 12px 18px; border-radius: 15px; max-width: 75%; font-size: 0.95rem; position: relative; }
+    .msg-me { background-color: #b8860b; color: white; margin-left: auto; text-align: right; border-bottom-right-radius: 2px; }
+    .msg-other { background-color: #e9ecef; color: #212529; margin-right: auto; border-bottom-left-radius: 2px; }
     .msg-info { font-size: 0.7rem; opacity: 0.8; margin-top: 5px; display: block; }
-    .msg-me .msg-info { color: #e0e0e0; }
-    .btn-agendar { background-color: #f39c12; border: none; color: white; font-weight: bold; }
-    .btn-agendar:hover { background-color: #d68910; color: white; }
+    .msg-me .msg-info { color: #f0f0f0; }
   </style>
 </head>
 <body>
 
 <div class="row g-0">
   <div class="col-md-3 sidebar-info">
-    <h4 class="mb-4">📋 Panel Notarial</h4>
+    <h4 class="mb-4 text-gold text-center"><i class="bi bi-folder-fill"></i> Expediente</h4>
 
-    <div class="card bg-dark text-white border-secondary mb-4">
-      <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">Cliente</h6>
-        <h5 class="card-title" th:text="${tramite.cliente.nombre} + ' ' + ${tramite.cliente.apellido}"></h5>
-        <p class="card-text small">DNI: <span th:text="${tramite.cliente.dni}"></span></p>
-        <hr class="border-secondary">
-        <h6 class="card-subtitle mb-2 text-muted">Servicio</h6>
-        <p class="card-text fw-bold text-warning" th:text="${tramite.servicio.nombre}"></p>
+    <div class="card card-dark mb-4 shadow-sm">
+      <div class="card-body p-3">
+        <label class="small text-label text-uppercase mb-1">Cliente</label>
+        <div class="fs-5 mb-3 text-white" th:text="${tramite.cliente.nombre} + ' ' + ${tramite.cliente.apellido}"></div>
+
+        <label class="small text-label text-uppercase mb-1">Servicio</label>
+        <div class="text-gold fw-bold fs-6" th:text="${tramite.servicio.nombre}"></div>
       </div>
     </div>
 
-    <div class="card bg-light text-dark">
-      <div class="card-body">
-        <h5 class="card-title mb-3">📅 Agendar Reunión</h5>
-        <form th:action="@{/proceso/agendarReunion}" method="post">
-          <input type="hidden" name="idTramite" th:value="${tramite.idTramite}">
+    <div class="mb-4">
+      <h6 class="text-uppercase text-light-gray small mb-3 border-bottom border-secondary pb-2">
+        <i class="bi bi-paperclip"></i> Archivos Adjuntos
+      </h6>
 
-          <div class="mb-2">
-            <label class="form-label small fw-bold">Fecha y Hora</label>
-            <input type="datetime-local" class="form-control form-control-sm" name="fecha" required>
-          </div>
+      <div th:if="${mensajes.empty}" class="text-light-gray small fst-italic opacity-75">No hay archivos compartidos.</div>
 
-          <div class="mb-3">
-            <label class="form-label small fw-bold">Tema / Ubicación</label>
-            <input type="text" class="form-control form-control-sm" name="tema" placeholder="Ej: Zoom o Presencial" required>
-          </div>
-
-          <button type="submit" class="btn btn-agendar w-100 btn-sm">Confirmar Cita</button>
-        </form>
+      <div th:each="m : ${mensajes}" th:if="${m.archivoUrl != null}">
+        <a th:href="@{'/uploads/chat/' + ${m.archivoUrl}}" target="_blank" class="file-item" title="Clic para ver">
+          <i class="bi bi-file-earmark-text me-2 fs-5 text-gold"></i>
+          <span class="text-truncate" style="max-width: 150px;"
+                th:text="${#strings.length(m.archivoUrl) > 20 ? '...' + #strings.substring(m.archivoUrl, 10) : m.archivoUrl}">
+                    Archivo
+                </span>
+        </a>
       </div>
     </div>
 
-    <div class="mt-5 text-center">
-      <a href="/SistemaNotario?seccion=tramites" class="btn btn-outline-light w-100">⬅ Volver al Listado</a>
+    <div class="mt-auto">
+      <button class="btn btn-gold w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCita">
+        📅 Agendar Cita
+      </button>
+
+      <div class="collapse mb-3" id="collapseCita">
+        <div class="card card-body card-dark p-2">
+          <form th:action="@{/proceso/agendarReunion}" method="post">
+            <input type="hidden" name="idTramite" th:value="${tramite.idTramite}">
+            <input type="datetime-local" class="form-control form-control-sm mb-2" name="fecha" required>
+            <input type="text" class="form-control form-control-sm mb-2" name="tema" placeholder="Tema/Lugar" required>
+            <button type="submit" class="btn btn-light btn-sm w-100 fw-bold">Guardar Cita</button>
+          </form>
+        </div>
+      </div>
+
+      <button class="btn btn-outline-danger w-100 mb-3" onclick="confirmarFinalizar()">
+        🔒 Finalizar Trámite
+      </button>
+
+      <form id="formFinalizar" th:action="@{/proceso/finalizar}" method="post">
+        <input type="hidden" name="idTramite" th:value="${tramite.idTramite}">
+      </form>
+
+      <a href="/SistemaNotario?seccion=tramites" class="btn btn-link text-light w-100 text-decoration-none small opacity-75 hover-opacity-100">
+        <i class="bi bi-arrow-left"></i> Volver al Panel
+      </a>
     </div>
   </div>
 
-  <div class="col-md-9 p-4 d-flex flex-column" style="height: 100vh;">
+  <div class="col-md-9 p-4 chat-area">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>Expediente #<span th:text="${tramite.idTramite}"></span></h3>
-      <span class="badge bg-success px-3 py-2">Estado: Activo</span>
+      <h2 class="fw-bold text-dark">Caso #<span th:text="${tramite.idTramite}"></span></h2>
+      <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">En Curso</span>
     </div>
 
-    <div class="chat-container shadow-sm mb-3" id="chatBox">
+    <div class="chat-container mb-3" id="chatBox">
       <div th:if="${mensajes.empty}" class="text-center text-muted mt-5">
-        <p>Inicie la conversación o solicite documentos al cliente.</p>
+        <i class="bi bi-chat-square-dots fs-1 d-block mb-2"></i>
+        <p>El historial está vacío. Inicie la comunicación.</p>
       </div>
 
       <div th:each="m : ${mensajes}"
-           th:class="'msg ' + (${m.usuario.idUsuario == usuarioActual.idUsuario} ? 'msg-me' : 'msg-other')">
+           th:class="'msg ' + (${m.usuario.idUsuario == usuarioActual.idUsuario} ? 'msg-me shadow-sm' : 'msg-other shadow-sm')">
 
-        <strong th:if="${m.usuario.idUsuario != usuarioActual.idUsuario}" class="d-block mb-1 small text-secondary">Cliente</strong>
+        <strong th:if="${m.usuario.idUsuario != usuarioActual.idUsuario}" class="d-block mb-1 small text-secondary">
+          <i class="bi bi-person-circle"></i> Cliente
+        </strong>
 
         <div th:if="${m.contenido != null}" th:text="${m.contenido}" style="white-space: pre-wrap;"></div>
 
-        <div th:if="${m.archivoUrl != null}" class="mt-2">
-          <a th:href="@{'/uploads/chat/' + ${m.archivoUrl}}"
-             th:class="${m.usuario.idUsuario == usuarioActual.idUsuario} ? 'btn btn-sm btn-light text-primary' : 'btn btn-sm btn-secondary'"
-             target="_blank">
-            📎 Ver Archivo Adjunto
+        <div th:if="${m.archivoUrl != null}" class="mt-2 p-2 bg-white rounded text-dark border d-inline-block">
+          <a th:href="@{'/uploads/chat/' + ${m.archivoUrl}}" class="text-decoration-none text-dark fw-bold d-flex align-items-center" target="_blank">
+            <i class="bi bi-file-earmark-arrow-down-fill text-danger fs-4 me-2"></i>
+            <span class="small">Ver Adjunto</span>
           </a>
         </div>
 
@@ -92,15 +169,14 @@
       </div>
     </div>
 
-    <div class="card bg-light border-0 shadow-sm">
-      <div class="card-body">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
         <form th:action="@{/proceso/mensaje}" method="post" enctype="multipart/form-data">
           <input type="hidden" name="idTramite" th:value="${tramite.idTramite}">
-
-          <div class="input-group">
-            <input type="text" class="form-control" name="contenido" placeholder="Escriba respuesta, solicitud o notas..." autocomplete="off">
-            <input type="file" class="form-control" name="archivo" style="max-width: 300px;">
-            <button class="btn btn-primary px-4 fw-bold" type="submit">Enviar</button>
+          <div class="input-group input-group-lg">
+            <input type="text" class="form-control fs-6" name="contenido" placeholder="Escriba un mensaje..." autocomplete="off">
+            <input type="file" class="form-control fs-6" name="archivo" style="max-width: 200px;">
+            <button class="btn btn-gold px-4" type="submit"><i class="bi bi-send-fill"></i></button>
           </div>
         </form>
       </div>
@@ -108,9 +184,27 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   var chatBox = document.getElementById("chatBox");
   chatBox.scrollTop = chatBox.scrollHeight;
+
+  function confirmarFinalizar() {
+    Swal.fire({
+      title: '¿Finalizar Trámite?',
+      text: "El caso pasará a estado COMPLETADO.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#b8860b',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, finalizar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('formFinalizar').submit();
+      }
+    })
+  }
 </script>
 
 </body>

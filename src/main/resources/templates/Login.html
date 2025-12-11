@@ -36,5 +36,27 @@
         <a th:href="@{/registrarse}" class="btn btn-gold" style="width: 100%;">Crear Cuenta</a>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const Toast = Swal.mixin({
+        toast: true, position: 'top', showConfirmButton: false, timer: 3000
+    });
+
+    if (params.has('error')) {
+        Toast.fire({ icon: 'error', title: 'Credenciales incorrectas', text: 'Usuario o contraseña no válidos.' });
+    }
+    if (params.has('logout')) {
+        Toast.fire({ icon: 'info', title: 'Sesión cerrada correctamente' });
+    }
+    if (params.get('registro') === 'exitoso') {
+        Swal.fire({
+            title: '¡Cuenta Creada!',
+            text: 'Ahora puedes iniciar sesión con tus credenciales.',
+            icon: 'success',
+            confirmButtonColor: '#b8860b'
+        });
+    }
+</script>
 </body>
 </html>

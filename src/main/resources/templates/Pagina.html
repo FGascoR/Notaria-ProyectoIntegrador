@@ -19,7 +19,7 @@
             width: 100%;
             z-index: 1030;
             transition: top 0.4s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -251,39 +251,96 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalPago" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form th:action="@{/pago/procesar}" method="post">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Realizar Pago</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="pagoIdTramite" name="idTramite">
-                    <div class="text-center mb-4">
-                        <h5>Servicio: <strong id="pagoNombreServicio"></strong></h5>
-                        <h3 class="text-success">Total: S/ <span id="pagoMonto"></span></h3>
+<div class="modal fade" id="modalPago" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content overflow-hidden">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-4 bg-light p-4 d-flex flex-column justify-content-between border-end">
+                        <div>
+                            <h5 class="text-secondary mb-4">Resumen de Compra</h5>
+                            <p class="text-muted small mb-1">Servicio</p>
+                            <h6 class="fw-bold mb-3" id="pagoNombreServicio">Nombre Servicio</h6>
+
+                            <p class="text-muted small mb-1">Costo del Trámite</p>
+                            <h3 class="text-dark fw-bold">S/ <span id="pagoMonto">0.00</span></h3>
+                        </div>
+                        <div class="mt-4">
+                            <div class="small text-muted"><i class="bi bi-shield-lock-fill text-success"></i> Pago 100% Seguro</div>
+                            <div class="small text-muted mt-1">Transacción encriptada</div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Seleccione Método de Pago:</label>
-                        <select class="form-select" name="metodoPago" required>
-                            <option value="TARJETA">Tarjeta de Crédito/Débito</option>
-                            <option value="YAPE">Yape / Plin</option>
-                            <option value="TRANSFERENCIA">Transferencia Bancaria</option>
-                        </select>
+
+                    <div class="col-md-8 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">Pasarela de Pago</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <form th:action="@{/pago/procesar}" method="post" id="formPagoReal" onsubmit="return simularProcesamiento(event)">
+                            <input type="hidden" id="pagoIdTramite" name="idTramite">
+                            <input type="hidden" id="inputMetodoPago" name="metodoPago" value="TARJETA">
+
+                            <div class="mb-4">
+                                <label class="form-label text-muted small fw-bold">SELECCIONE MÉTODO</label>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-secondary flex-fill active-method" onclick="seleccionarMetodo('TARJETA', this)">
+                                        <i class="bi bi-credit-card-2-front"></i> Tarjeta
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary flex-fill" onclick="seleccionarMetodo('YAPE', this)">
+                                        <i class="bi bi-qr-code"></i> Yape / Plin
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="viewTarjeta" class="payment-view">
+                                <div class="mb-3">
+                                    <label class="form-label small">Número de Tarjeta</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white"><i class="bi bi-credit-card"></i></span>
+                                        <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small">Expiración (MM/YY)</label>
+                                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">CVV</label>
+                                        <input type="password" class="form-control" placeholder="123" maxlength="3" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label class="form-label small">Titular de la Tarjeta</label>
+                                    <input type="text" class="form-control" placeholder="Como aparece en la tarjeta" required>
+                                </div>
+                            </div>
+
+                            <div id="viewYape" class="payment-view d-none text-center py-3">
+                                <div class="bg-white p-3 border rounded d-inline-block mb-3">
+                                    <i class="bi bi-qr-code-scan" style="font-size: 5rem; color: #720e9e;"></i>
+                                </div>
+                                <p class="small text-muted">Escanea el código QR con tu aplicación.</p>
+                                <div class="alert alert-warning small py-1">
+                                    <i class="bi bi-info-circle"></i> Esperando confirmación del pago...
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-gold w-100 py-2 mt-2 shadow-sm" id="btnPagar">
+                                <span id="textPagar">Pagar Ahora</span>
+                                <span id="spinnerPagar" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Confirmar Pago</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script th:inline="javascript">
     let lastScrollTop = 0;
@@ -332,6 +389,87 @@
         document.getElementById('pagoMonto').innerText = parseFloat(costo).toFixed(2);
         new bootstrap.Modal(document.getElementById('modalPago')).show();
     }
+
+    function abrirModalPago(id, nombre, costo) {
+        document.getElementById('pagoIdTramite').value = id;
+        document.getElementById('pagoNombreServicio').innerText = nombre;
+        document.getElementById('pagoMonto').innerText = parseFloat(costo).toFixed(2);
+
+        seleccionarMetodo('TARJETA', document.querySelector('.active-method'));
+
+        new bootstrap.Modal(document.getElementById('modalPago')).show();
+    }
+
+    function seleccionarMetodo(metodo, btn) {
+        document.getElementById('inputMetodoPago').value = metodo;
+
+        document.querySelectorAll('.d-flex.gap-2 button').forEach(b => {
+            b.classList.remove('btn-dark', 'text-white');
+            b.classList.add('btn-outline-secondary');
+        });
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-dark', 'text-white');
+
+        if (metodo === 'TARJETA') {
+            document.getElementById('viewTarjeta').classList.remove('d-none');
+            document.getElementById('viewYape').classList.add('d-none');
+            document.querySelectorAll('#viewTarjeta input').forEach(i => i.required = true);
+        } else {
+            document.getElementById('viewTarjeta').classList.add('d-none');
+            document.getElementById('viewYape').classList.remove('d-none');
+            document.querySelectorAll('#viewTarjeta input').forEach(i => i.required = false);
+        }
+    }
+
+    function simularProcesamiento(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('btnPagar');
+        const text = document.getElementById('textPagar');
+        const spinner = document.getElementById('spinnerPagar');
+
+        btn.disabled = true;
+        text.innerText = "Procesando...";
+        spinner.classList.remove('d-none');
+
+        setTimeout(() => {
+            document.getElementById('formPagoReal').submit();
+        }, 2000);
+
+        return false;
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
+        if (params.get('solicitud') === 'exito') {
+            Toast.fire({
+                icon: 'success',
+                title: '¡Solicitud enviada!',
+                text: 'El notario revisará tu caso pronto.'
+            });
+        }
+
+        if (params.get('pago') === 'exitoso') {
+            Swal.fire({
+                title: '¡Pago Confirmado!',
+                text: 'Tu trámite ha iniciado oficialmente. Puedes ver el seguimiento en "Mis Solicitudes".',
+                icon: 'success',
+                confirmButtonColor: '#b8860b',
+                confirmButtonText: 'Entendido',
+                backdrop: `rgba(0,0,0,0.4) url("/img/confetti.gif") left top no-repeat`
+            });
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+
 </script>
 </body>
 </html>

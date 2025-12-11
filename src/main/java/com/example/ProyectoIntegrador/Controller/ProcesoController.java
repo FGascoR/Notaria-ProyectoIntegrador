@@ -114,4 +114,27 @@ public class ProcesoController {
         }
         return "redirect:/proceso/notario/" + idTramite;
     }
+
+    @PostMapping("/finalizar")
+    public String finalizarTramite(@RequestParam("idTramite") Integer idTramite, Authentication auth) {
+        Tramite tramite = tramiteRepository.findById(idTramite).orElse(null);
+        Usuario usuario = usuarioRepository.findByNombreUsuario(auth.getName()).orElse(null);
+
+        if (tramite != null && usuario != null) {
+            tramite.setEstado(Tramite.Estado.completado);
+            tramiteRepository.save(tramite);
+
+            MensajeChat cierre = new MensajeChat();
+            cierre.setTramite(tramite);
+            cierre.setUsuario(usuario);
+            cierre.setContenido("🔒 TRAMITE FINALIZADO. Gracias por su confianza.");
+            mensajeChatRepository.save(cierre);
+        }
+
+        if (usuario != null && usuario.getRol() == Usuario.Rol.notario) {
+            return "redirect:/SistemaNotario?seccion=tramites";
+        } else {
+            return "redirect:/Pagina";
+        }
+    }
 }
