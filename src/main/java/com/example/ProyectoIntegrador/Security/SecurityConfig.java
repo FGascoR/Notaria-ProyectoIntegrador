@@ -32,11 +32,11 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp.policyDirectives(
                                 "default-src 'self'; " +
-                                        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; " +
-                                        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; " +
-                                        "img-src 'self' data: https://cdn.jsdelivr.net https://images.pexels.com https://upload.wikimedia.org; " +
-                                        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net data:; " +
-                                        "connect-src 'self' https://cdn.jsdelivr.net; " +
+                                        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+                                        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
+                                        "img-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://images.pexels.com https://upload.wikimedia.org; " +
+                                        "font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
+                                        "connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
                                         "frame-ancestors 'self'; "
                         ))
                         .frameOptions(frame -> frame.sameOrigin())
@@ -59,8 +59,9 @@ public class SecurityConfig {
 
                 .formLogin(form -> form
                         .loginPage("/Login")
-                        .loginProcessingUrl("/login")
+                        .loginProcessingUrl("/Login")
                         .successHandler(successHandler)
+                        .failureUrl("/Login?error=true")
                         .permitAll()
                 )
 

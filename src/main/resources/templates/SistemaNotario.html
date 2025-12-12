@@ -3,173 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistema de Gestión Notarial</title>
-
+    <title>Panel de Gestión | Notaría Digital</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" >
+
     <style>
+        :root {
+            --sidebar-bg: #1a252f;
+            --sidebar-hover: #2c3e50;
+            --gold: #d4af37;
+            --text-light: #ecf0f1;
+            --bg-main: #f8f9fa;
+        }
+
         body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
             overflow-x: hidden;
         }
 
+        /* --- Sidebar --- */
         .sidebar {
-            width: 250px;
-            background-color: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
             height: 100vh;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
             z-index: 1000;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+            padding-top: 1rem;
+        }
+
+        .brand-section {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .brand-section h4 {
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            flex: 1;
+            padding: 0 10px;
         }
 
         .sidebar a {
-            color: #bbb;
+            color: #bdc3c7;
             text-decoration: none;
             padding: 12px 15px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            display: block;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
             transition: all 0.3s ease;
+            font-size: 0.95rem;
         }
 
-        .sidebar a:hover, .sidebar a.active {
-            background-color: #b8860b;
-            color: #fff;
-            padding-left: 20px;
-        }
-
-        .sidebar a.logout {
-            margin-top: auto;
-            background-color: #dc3545;
-            color: white;
+        .sidebar a i {
+            width: 25px;
+            margin-right: 10px;
             text-align: center;
         }
 
+        .sidebar a:hover, .sidebar a.active {
+            background-color: var(--sidebar-hover);
+            color: var(--gold);
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            border-left: 4px solid var(--gold);
+        }
+
+        .logout-btn {
+            margin: 20px;
+            background-color: #c0392b;
+            color: white !important;
+            justify-content: center;
+            font-weight: 500;
+        }
+        .logout-btn:hover { background-color: #e74c3c !important; color: white !important; }
+
+        /* --- Contenido Principal --- */
         .content {
-            margin-left: 250px;
-            padding: 30px;
-            width: calc(100% - 250px);
+            margin-left: 260px;
+            padding: 2rem;
             min-height: 100vh;
         }
 
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* --- Tarjetas Dashboard --- */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 5px solid var(--gold);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #bdc3c7;
+            opacity: 0.3;
+        }
+
+        .stat-info h2 { font-size: 2.5rem; margin: 0; font-weight: 700; color: #2c3e50; }
+        .stat-info span { color: #7f8c8d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- Tablas --- */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+        }
+
+        .table-custom thead {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .table-custom th {
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+            padding: 1rem;
+        }
+
+        .table-custom td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #555;
+        }
+
+        .badge-custom {
+            padding: 0.5em 0.8em;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        /* --- Botones --- */
+        .btn-action {
+            width: 32px; height: 32px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
         .thumb-servicio {
-            width: 50px;
-            height: 50px;
+            width: 45px; height: 45px;
             object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .filter-container {
-            background-color: #ffffff;
-            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        section {
-            display: none;
-        }
+        /* Secciones ocultas */
+        section { display: none; }
+        section.active-section { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h3 class="text-center mb-4 text-warning">Notaría</h3>
-    <a href="#" onclick="mostrarSeccion('inicio')" id="linkInicio">Inicio</a>
-    <a href="#" onclick="mostrarSeccion('solicitudes')" id="linkSolicitudes">Bandeja Solicitudes</a>
-    <a href="#" onclick="mostrarSeccion('tramites')" id="linkTramites">Trámites en Curso</a>
-    <a href="#" onclick="mostrarSeccion('clientes')" id="linkClientes">Clientes</a>
-    <a href="#" onclick="mostrarSeccion('servicios')" id="linkServicios">Servicios</a>
-    <div class="flex-grow-1"></div>
-    <form th:action="@{/logout}" method="post" style="display: block; width: 100%;">
-        <button type="submit" class="btn btn-danger w-100 mt-3">Cerrar Sesión</button>
-    </form>
+    <div class="brand-section">
+        <h4><i class="fas fa-balance-scale"></i> NOTARÍA</h4>
+        <small class="text-muted">Panel Administrativo</small>
+    </div>
+
+    <div class="nav-links">
+        <a href="#" onclick="mostrarSeccion('inicio')" id="linkInicio" class="active">
+            <i class="fas fa-home"></i> Inicio
+        </a>
+        <a href="#" onclick="mostrarSeccion('solicitudes')" id="linkSolicitudes">
+            <i class="fas fa-envelope-open-text"></i> Solicitudes
+            <span class="badge bg-danger ms-auto rounded-pill" th:if="${solicitudesPendientes.size() > 0}" th:text="${solicitudesPendientes.size()}"></span>
+        </a>
+        <a href="#" onclick="mostrarSeccion('tramites')" id="linkTramites">
+            <i class="fas fa-file-signature"></i> Trámites en Curso
+        </a>
+        <a href="#" onclick="mostrarSeccion('servicios')" id="linkServicios">
+            <i class="fas fa-concierge-bell"></i> Servicios
+        </a>
+        <a href="#" onclick="mostrarSeccion('clientes')" id="linkClientes">
+            <i class="fas fa-users"></i> Clientes
+        </a>
+    </div>
+
+    <a th:href="@{/logout}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+    </a>
 </div>
 
 <div class="content">
 
-    <section id="inicio" style="display: block;">
-        <div class="card p-5">
-            <h1 class="mb-3">Bienvenido, <strong class="text-warning" th:text="${nombreNotario}">Notario</strong></h1>
-            <p class="lead">Sistema de Gestión Notarial Integrado.</p>
-            <hr>
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card bg-primary text-white p-3 mb-3">
-                        <h5>Solicitudes Pendientes</h5>
+    <section id="inicio" class="active-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark">Bienvenido, Notario</h2>
+                <p class="text-muted">Resumen de la actividad del día.</p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-light text-dark border p-2"><i class="far fa-calendar-alt"></i> Hoy</span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <span class="text-warning">Solicitudes Pendientes</span>
                         <h2 th:text="${solicitudesPendientes != null ? solicitudesPendientes.size() : 0}">0</h2>
                     </div>
+                    <div class="stat-icon"><i class="fas fa-inbox"></i></div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card bg-success text-white p-3 mb-3">
-                        <h5>Trámites en Curso</h5>
+            </div>
+            <div class="col-md-6">
+                <div class="stat-card" style="border-left-color: #2ecc71;">
+                    <div class="stat-info">
+                        <span class="text-success">Trámites Activos</span>
                         <h2 th:text="${tramitesEnProceso != null ? tramitesEnProceso.size() : 0}">0</h2>
                     </div>
+                    <div class="stat-icon"><i class="fas fa-tasks"></i></div>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="solicitudes">
-        <h2 class="mb-4">Bandeja de Solicitudes (Pendientes)</h2>
+        <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-inbox text-warning me-2"></i> Bandeja de Entrada</h3>
 
-        <div class="filter-container row g-2">
-            <div class="col-md-8">
-                <input type="text" class="form-control" id="buscarSolicitud" onkeyup="filtrarTabla('tablaSolicitudes', this.value)" placeholder="🔍 Buscar por cliente, descripción...">
-            </div>
-            <div class="col-md-4">
-                <select class="form-select" onchange="filtrarPorColumna('tablaSolicitudes', 2, this.value)">
-                    <option value="">Todos los Servicios</option>
-                    <option th:each="s : ${servicios}" th:value="${s.nombre}" th:text="${s.nombre}"></option>
-                </select>
-            </div>
-        </div>
-
-        <div class="card p-3">
+        <div class="table-container">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tablaSolicitudes">
-                    <thead class="table-dark text-center">
+                <table class="table table-custom table-hover">
+                    <thead>
                     <tr>
+                        <th>#ID</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
-                        <th>Trámite</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th>
+                        <th>Servicio Solicitado</th>
+                        <th>Detalle</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${solicitudesPendientes == null or solicitudesPendientes.empty}">
-                        <td colspan="5" class="text-center p-4">No hay solicitudes pendientes.</td>
+                        <td colspan="6" class="text-center p-5 text-muted">
+                            <i class="far fa-check-circle fa-2x mb-3"></i><br>Todo al día. No hay solicitudes pendientes.
+                        </td>
                     </tr>
                     <tr th:each="t : ${solicitudesPendientes}">
+                        <td class="fw-bold text-muted">#<span th:text="${t.idTramite}"></span></td>
                         <td th:text="${t.fechaInicio}"></td>
-                        <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
-                        <td th:text="${t.servicio.nombre}" class="fw-bold text-primary"></td>
-                        <td th:text="${t.observaciones}"></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-2"><i class="fas fa-user"></i></div>
+                                <div>
+                                    <span class="fw-bold d-block" th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></span>
+                                    <small class="text-muted" th:text="${t.cliente.dni}"></small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary bg-opacity-10 text-primary" th:text="${t.servicio.nombre}"></span></td>
+                        <td class="text-truncate" style="max-width: 200px;" th:text="${t.observaciones}"></td>
                         <td class="text-center">
                             <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/aceptado'}"
-                               class="btn btn-sm btn-success"
-                               onclick="confirmarAccion(event, this.href, '¿Aceptar Solicitud?', 'El trámite pasará a estado Aceptado.', 'Sí, aceptar', '#198754')">
-                                ✔ Aceptar
+                               class="btn btn-success btn-sm me-1" title="Aceptar" onclick="return confirm('¿Aceptar solicitud?')">
+                                <i class="fas fa-check"></i>
                             </a>
                             <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/rechazado'}"
-                               class="btn btn-sm btn-danger"
-                               onclick="confirmarAccion(event, this.href, '¿Rechazar Solicitud?', 'Esta acción es irreversible.', 'Sí, rechazar', '#dc3545')">
-                                ✖ Rechazar
+                               class="btn btn-outline-danger btn-sm" title="Rechazar" onclick="return confirm('¿Rechazar solicitud?')">
+                                <i class="fas fa-times"></i>
                             </a>
                         </td>
                     </tr>
@@ -180,60 +297,50 @@
     </section>
 
     <section id="tramites">
-        <h2 class="mb-4">Trámites en Curso</h2>
-
-        <div class="filter-container row g-2">
-            <div class="col-md-8">
-                <input type="text" class="form-control" id="buscarTramite" onkeyup="filtrarTabla('tablaTramites', this.value)" placeholder="🔍 Buscar trámite, cliente...">
-            </div>
-            <div class="col-md-4">
-                <select class="form-select" onchange="filtrarPorEstadoPago(this.value)">
-                    <option value="">Todos los Estados de Pago</option>
-                    <option value="Ver Proceso">Pagado (Ver Proceso)</option>
-                    <option value="Pendiente Pago">Pendiente de Pago</option>
-                </select>
-            </div>
+        <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-briefcase text-success me-2"></i> Gestión de Trámites</h3>
+        <div class="alert alert-light border-start border-4 border-info shadow-sm">
+            <i class="fas fa-info-circle text-info me-2"></i> Gestione aquí los trámites aceptados. El chat se habilitará cuando el cliente realice el pago.
         </div>
 
-        <div class="card p-3">
+        <div class="table-container">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tablaTramites">
-                    <thead class="table-dark text-center">
+                <table class="table table-custom table-hover">
+                    <thead>
                     <tr>
+                        <th>#ID</th>
                         <th>Cliente</th>
                         <th>Servicio</th>
-                        <th>Estado Trámite</th>
                         <th>Estado Pago</th>
-                        <th>Gestión</th>
+                        <th class="text-center">Sala de Proceso</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${tramitesEnProceso == null or tramitesEnProceso.empty}">
-                        <td colspan="5" class="text-center p-4">No hay trámites en curso.</td>
+                        <td colspan="5" class="text-center p-5 text-muted">No hay trámites en curso actualmente.</td>
                     </tr>
                     <tr th:each="t : ${tramitesEnProceso}">
+                        <td class="fw-bold">#<span th:text="${t.idTramite}"></span></td>
                         <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
                         <td th:text="${t.servicio.nombre}"></td>
-                        <td class="text-center">
-                            <span class="badge bg-info text-dark" th:text="${t.estado}"></span>
+
+                        <td>
+                            <span th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}"
+                                  class="badge bg-success"><i class="fas fa-check-circle me-1"></i> PAGADO</span>
+                            <span th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}"
+                                  class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> PENDIENTE</span>
                         </td>
 
-                        <td class="text-center columna-pago">
+                        <td class="text-center">
                             <div th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
-                                <a th:href="@{'/proceso/notario/' + ${t.idTramite}}" class="btn btn-primary btn-sm fw-bold">
-                                    Ver Proceso 💬
+                                <a th:href="@{'/proceso/notario/' + ${t.idTramite}}" class="btn btn-primary btn-sm shadow-sm">
+                                    <i class="fas fa-comments me-1"></i> Abrir Chat
                                 </a>
                             </div>
-
                             <div th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
-                                <button class="btn btn-secondary btn-sm" disabled title="Esperando pago del cliente">
-                                    🔒 Pendiente Pago
+                                <button class="btn btn-light text-muted btn-sm border" disabled>
+                                    <i class="fas fa-lock me-1"></i> Bloqueado
                                 </button>
                             </div>
-                        </td>
-
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-secondary">Detalles</button>
                         </td>
                     </tr>
                     </tbody>
@@ -243,77 +350,72 @@
     </section>
 
     <section id="servicios">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Gestión de Servicios</h2>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">+ Nuevo Servicio</button>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-dark"><i class="fas fa-concierge-bell text-secondary me-2"></i> Catálogo de Servicios</h3>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">
+                <i class="fas fa-plus me-2"></i> Nuevo Servicio
+            </button>
         </div>
 
-        <div class="filter-container">
-            <input type="text" class="form-control" onkeyup="filtrarTabla('tablaServicios', this.value)" placeholder="🔍 Buscar servicio...">
-        </div>
-
-        <div class="card p-3">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tablaServicios">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Costo</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="servicio : ${servicios}">
-                        <td>
-                            <img th:if="${servicio.img != null}" th:src="@{'/uploads/servicios/' + ${servicio.img}}" class="thumb-servicio">
-                        </td>
-                        <td th:text="${servicio.nombre}"></td>
-                        <td th:text="${servicio.descripcion}"></td>
-                        <td th:text="'S/ ' + ${servicio.costo}"></td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" th:attr="onclick=|editarServicio(${servicio.idServicio})|">Editar</button>
-                            <a th:href="@{'/servicios/eliminar/' + ${servicio.idServicio}}"
-                               class="btn btn-sm btn-danger"
-                               onclick="confirmarAccion(event, this.href, '¿Eliminar Servicio?', 'Se borrará permanentemente.', 'Sí, eliminar', '#dc3545')">
-                                Eliminar
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-container">
+            <table class="table table-custom align-middle">
+                <thead>
+                <tr>
+                    <th>Img</th>
+                    <th>Nombre del Servicio</th>
+                    <th>Descripción</th>
+                    <th>Costo</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="servicio : ${servicios}">
+                    <td>
+                        <img th:if="${servicio.img != null}" th:src="@{'/uploads/servicios/' + ${servicio.img}}" class="thumb-servicio">
+                        <div th:unless="${servicio.img != null}" class="thumb-servicio d-flex align-items-center justify-content-center bg-light text-muted">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    </td>
+                    <td class="fw-bold text-dark" th:text="${servicio.nombre}"></td>
+                    <td class="text-muted small" th:text="${servicio.descripcion}"></td>
+                    <td class="text-success fw-bold" th:text="'S/ ' + ${servicio.costo}"></td>
+                    <td class="text-center">
+                        <button class="btn btn-outline-warning btn-action me-1" th:attr="onclick=|editarServicio(${servicio.idServicio})|" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <a th:href="@{'/servicios/eliminar/' + ${servicio.idServicio}}" class="btn btn-outline-danger btn-action"
+                           onclick="return confirm('¿Seguro que deseas eliminar este servicio?');" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
     <section id="clientes">
-        <h2 class="mb-4">Directorio de Clientes</h2>
-
-        <div class="filter-container">
-            <input type="text" class="form-control" onkeyup="filtrarTabla('tablaClientes', this.value)" placeholder="🔍 Buscar cliente por nombre, DNI...">
-        </div>
-
-        <div class="card p-3">
-            <div class="table-responsive">
-                <table class="table table-striped" id="tablaClientes">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Nombre</th> <th>Apellido</th> <th>DNI</th> <th>Usuario</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="cliente : ${clientes}">
-                        <td th:text="${cliente.nombre}"></td>
-                        <td th:text="${cliente.apellido}"></td>
-                        <td th:text="${cliente.dni}"></td>
-                        <td>
-                            <button class="btn btn-sm btn-info text-white" th:attr="onclick=|verUsuario(${cliente.idCliente})|">Ver Usuario</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-users text-info me-2"></i> Directorio de Clientes</h3>
+        <div class="table-container">
+            <table class="table table-custom table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th> <th>Nombre Completo</th> <th>DNI</th> <th class="text-center">Usuario Sistema</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.idCliente}"></td>
+                    <td class="fw-bold" th:text="${cliente.nombre} + ' ' + ${cliente.apellido}"></td>
+                    <td><span class="badge bg-light text-dark border"><i class="far fa-id-card me-1"></i> <span th:text="${cliente.dni}"></span></span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-info text-white" th:attr="onclick=|verUsuario(${cliente.idCliente})|">
+                            <i class="fas fa-eye me-1"></i> Ver Info
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -323,9 +425,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form th:action="@{/servicios/guardar}" method="post" th:object="${servicio}" enctype="multipart/form-data">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Nuevo Servicio</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Agregar Nuevo Servicio</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3"><label>Imagen</label><input type="file" class="form-control" name="imagenArchivo" accept="image/*" required></div>
@@ -334,7 +436,7 @@
                     <div class="mb-3"><label>Costo</label><input type="number" class="form-control" step="0.01" th:field="*{costo}" required></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Servicio</button>
                 </div>
             </form>
         </div>
@@ -345,20 +447,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form th:action="@{/servicios/editar}" method="post" enctype="multipart/form-data">
-                <div class="modal-header bg-warning">
+                <div class="modal-header bg-warning text-dark">
                     <h5 class="modal-title">Editar Servicio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="editIdServicio" name="idServicio">
-                    <div class="text-center mb-3"><img id="editPreview" src="" style="width:80px;height:80px;object-fit:cover;"></div>
-                    <div class="mb-3"><label>Imagen</label><input type="file" class="form-control" name="imagenArchivo"></div>
+                    <div class="text-center mb-3"><img id="editPreview" src="" class="rounded" style="width:100px; height:100px; object-fit:cover; border:1px solid #ddd;"></div>
+                    <div class="mb-3"><label>Cambiar Imagen</label><input type="file" class="form-control" name="imagenArchivo"></div>
                     <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" id="editNombre" name="nombre" required></div>
                     <div class="mb-3"><label>Descripción</label><textarea class="form-control" id="editDescripcion" name="descripcion" required></textarea></div>
                     <div class="mb-3"><label>Costo</label><input type="number" class="form-control" id="editCosto" name="costo" step="0.01" required></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning">Guardar</button>
+                    <button type="submit" class="btn btn-warning fw-bold">Actualizar</button>
                 </div>
             </form>
         </div>
@@ -366,137 +468,63 @@
 </div>
 
 <div class="modal fade" id="modalUsuarioCliente" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white"><h5 class="modal-title">Info Usuario</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Info Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="display-1 text-muted mb-2"><i class="fas fa-user-circle"></i></div>
                 <p><strong>Usuario:</strong> <span id="usuarioNombre"></span></p>
+                <p class="text-muted small">ID Sistema: <span id="usuarioId"></span></p>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
+    // Script de navegación
     function mostrarSeccion(id) {
-        document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
-        const sec = document.getElementById(id);
-        if(sec) sec.style.display = 'block';
+        // Ocultar todas
+        document.querySelectorAll('section').forEach(sec => sec.classList.remove('active-section'));
 
+        // Mostrar seleccionada
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active-section');
+
+        // Actualizar links activos en sidebar
         document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-        const link = document.getElementById('link' + id.charAt(0).toUpperCase() + id.slice(1));
-        if(link) link.classList.add('active');
+        const activeLink = document.getElementById('link' + id.charAt(0).toUpperCase() + id.slice(1));
+        if(activeLink) activeLink.classList.add('active');
     }
 
+    // Mantener sección al recargar si hay parametro
     document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const seccion = params.get("seccion") || "inicio";
         mostrarSeccion(seccion);
-
-        if (params.get('edit') === 'success') {
-            const Toast = Swal.mixin({
-                toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
-            });
-            Toast.fire({ icon: 'success', title: 'Operación realizada correctamente' });
-        }
     });
 
-
-    function filtrarTabla(tablaId, texto) {
-        const table = document.getElementById(tablaId);
-        const tr = table.getElementsByTagName("tr");
-        const filtro = texto.toLowerCase();
-
-        for (let i = 1; i < tr.length; i++) {
-            let visible = false;
-            const td = tr[i].getElementsByTagName("td");
-            for (let j = 0; j < td.length; j++) {
-                if (td[j]) {
-                    if (td[j].textContent.toLowerCase().indexOf(filtro) > -1) {
-                        visible = true;
-                        break;
-                    }
-                }
-            }
-            tr[i].style.display = visible ? "" : "none";
-        }
-    }
-
-    function filtrarPorColumna(tablaId, indiceColumna, valor) {
-        const table = document.getElementById(tablaId);
-        const tr = table.getElementsByTagName("tr");
-        const filtro = valor.toLowerCase();
-
-        for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName("td")[indiceColumna]; // Columna específica
-            if (td) {
-                const textoCelda = td.textContent.toLowerCase();
-                tr[i].style.display = (valor === "" || textoCelda.indexOf(filtro) > -1) ? "" : "none";
-            }
-        }
-    }
-
-    function filtrarPorEstadoPago(valor) {
-        const table = document.getElementById('tablaTramites');
-        const tr = table.getElementsByTagName("tr");
-        const indicePago = 3;
-
-        for (let i = 1; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName("td")[indicePago];
-            if (td) {
-                const contenido = td.textContent || td.innerText;
-                if (valor === "") {
-                    tr[i].style.display = "";
-                } else if (contenido.includes("Ver Proceso") && valor === "Ver Proceso") {
-                    tr[i].style.display = "";
-                } else if (contenido.includes("Pendiente Pago") && valor === "Pendiente Pago") {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-
-    function confirmarAccion(event, url, titulo, texto, btnConfirmar, colorBtn) {
-        event.preventDefault();
-        Swal.fire({
-            title: titulo,
-            text: texto,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: colorBtn,
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: btnConfirmar,
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
+    // Funciones de Modales (Lógica original conservada)
+    function editarServicio(id) {
+        fetch('/servicios/editar/' + id).then(r => r.json()).then(data => {
+            document.getElementById('editIdServicio').value = data.idServicio;
+            document.getElementById('editNombre').value = data.nombre;
+            document.getElementById('editDescripcion').value = data.descripcion;
+            document.getElementById('editCosto').value = data.costo;
+            document.getElementById('editPreview').src = data.img ? '/uploads/servicios/' + data.img : '';
+            new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
         });
     }
 
-    function editarServicio(id) {
-        fetch('/servicios/editar/' + id)
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('editIdServicio').value = data.idServicio;
-                document.getElementById('editNombre').value = data.nombre;
-                document.getElementById('editDescripcion').value = data.descripcion;
-                document.getElementById('editCosto').value = data.costo;
-                document.getElementById('editPreview').src = data.img ? '/uploads/servicios/' + data.img : '';
-                new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
-            });
-    }
-
     function verUsuario(id) {
-        fetch('/clientes/usuario/' + id)
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('usuarioNombre').innerText = data ? data.nombreUsuario : '-';
-                new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
-            });
+        fetch('/clientes/usuario/' + id).then(r => r.json()).then(data => {
+            document.getElementById('usuarioId').innerText = data ? data.idUsuario : '-';
+            document.getElementById('usuarioNombre').innerText = data ? data.nombreUsuario : '-';
+            new bootstrap.Modal(document.getElementById('modalUsuarioCliente')).show();
+        });
     }
 </script>
 

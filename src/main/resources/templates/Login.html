@@ -1,63 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/stylesLogin.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Notaría Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
-<div class="bg-circle left"></div>
-<div class="bg-circle right"></div>
+<body class="login-page">
 
-<div class="page-wrap">
-    <div class="login-card">
-        <div class="avatar-wrap">
-            <img src="img/Screenshot 2025-07-20 215628.png" alt="avatar">
+<div class="login-container">
+    <div class="branding-side">
+        <div class="content-wrapper text-center">
+            <img src="/img/logo-notaria.png" alt="Logo Notaría" class="mb-4 logo-img">
+            <h1 class="fw-bold text-white">Notaría Digital</h1>
+            <p class="text-white-50 fs-5">Seguridad y eficiencia en tus trámites legales.</p>
         </div>
+    </div>
 
-        <h4 class="mb-4">Iniciar Sesión</h4>
+    <div class="form-side">
+        <div class="form-wrapper">
+            <h2 class="fw-bold mb-4 text-secondary">Bienvenido de nuevo</h2>
+            <p class="text-muted mb-4">Ingresa tus credenciales para acceder al sistema.</p>
 
-        <form th:action="@{/login}" method="post">
-            <div class="mb-3">
-                <input type="text" class="form-control" name="username" placeholder="Usuario" required>
+            <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <div>Usuario o contraseña incorrectos.</div>
             </div>
-            <div class="mb-2">
-                <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
-            </div>
-            <div class="text-start mb-3">
-                <a href="#" class="small-link">¿Olvidaste tu contraseña?</a>
-            </div>
-            <div class="mb-3">
-                <button type="submit" class="btn btn-gold">Ingresar</button>
-            </div>
-        </form> <div class="divider"></div>
-        <p class="small mb-3">¿No tienes una cuenta?</p>
 
-        <a th:href="@{/registrarse}" class="btn btn-gold" style="width: 100%;">Crear Cuenta</a>
+            <form th:action="@{/Login}" method="post">
+                <div class="mb-4 input-group-custom">
+                    <label for="username" class="form-label fw-medium small text-uppercase text-muted">Usuario</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="username" name="username" class="form-control ps-5" placeholder="Ej. juanperez" required autofocus>
+                    </div>
+                </div>
+
+                <div class="mb-4 input-group-custom">
+                    <label for="password" class="form-label fw-medium small text-uppercase text-muted">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" class="form-control ps-5" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                        INGRESAR <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center text-muted small">
+                ¿No tienes cuenta? Contacta a administración.
+            </div>
+        </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const Toast = Swal.mixin({
-        toast: true, position: 'top', showConfirmButton: false, timer: 3000
-    });
 
-    if (params.has('error')) {
-        Toast.fire({ icon: 'error', title: 'Credenciales incorrectas', text: 'Usuario o contraseña no válidos.' });
-    }
-    if (params.has('logout')) {
-        Toast.fire({ icon: 'info', title: 'Sesión cerrada correctamente' });
-    }
-    if (params.get('registro') === 'exitoso') {
-        Swal.fire({
-            title: '¡Cuenta Creada!',
-            text: 'Ahora puedes iniciar sesión con tus credenciales.',
-            icon: 'success',
-            confirmButtonColor: '#b8860b'
-        });
-    }
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

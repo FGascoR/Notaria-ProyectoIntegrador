@@ -1,0 +1,172 @@
+/* Importar fuente Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Paleta de colores de la Notaría */
+    --notary-dark-blue: #1a252f; /* Color oscuro principal */
+    --notary-blue-accent: #2c3e50; /* Color secundario */
+    --notary-gold: #d4af37; /* Color de acento (dorado elegante) */
+    --notary-gold-hover: #c4a030;
+    --text-muted: #6c757d;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+}
+
+/* =========================================
+   Estilos Específicos de la Página de Login
+   ========================================= */
+
+.login-page {
+    height: 100vh;
+    overflow: hidden; /* Evita scrollbars si no son necesarias */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* --- Lado Izquierdo (Branding) --- */
+.branding-side {
+    flex: 1; /* Toma el 50% del ancho en pantallas grandes */
+    background: linear-gradient(135deg, var(--notary-dark-blue), var(--notary-blue-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+}
+
+/* Patrón de fondo sutil para el lado oscuro (opcional) */
+.branding-side::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.content-wrapper {
+    z-index: 2; /* Asegura que el texto esté sobre el patrón de fondo */
+    padding: 2rem;
+}
+
+.logo-img {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+/* --- Lado Derecho (Formulario) --- */
+.form-side {
+    flex: 1; /* Toma el otro 50% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 2rem;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 400px; /* Ancho máximo del formulario */
+    padding: 2rem;
+}
+
+/* --- Estilos de los Inputs --- */
+.input-group-custom label {
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+
+/* Estilo moderno para los campos de texto */
+.form-control {
+    padding-left: 45px; /* Espacio para el icono */
+    height: 50px;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: var(--notary-blue-accent);
+    box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.1); /* Sombra azul sutil */
+}
+
+/* Cuando el input está en foco, el icono cambia de color */
+.form-control:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+    color: var(--notary-blue-accent);
+}
+
+/* --- Botones --- */
+/* Reemplazamos el azul por defecto de bootstrap por el dorado de la notaría */
+.btn-primary {
+    background-color: var(--notary-gold);
+    border-color: var(--notary-gold);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--notary-gold-hover);
+    border-color: var(--notary-gold-hover);
+    transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* --- Responsividad --- */
+/* En tablets y móviles, apilar verticalmente en lugar de horizontalmente */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .branding-side {
+        padding: 3rem 1rem;
+        flex: none; /* No estirar */
+    }
+
+    .form-side {
+        padding: 2rem 1rem;
+        flex: auto;
+        align-items: flex-start;
+    }
+
+    .logo-img {
+        width: 90px;
+    }
+}
