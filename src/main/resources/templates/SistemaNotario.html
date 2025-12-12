@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <style>
         :root {
@@ -90,8 +91,13 @@
             color: white !important;
             justify-content: center;
             font-weight: 500;
+            border: none;
+            width: calc(100% - 40px);
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.3s;
         }
-        .logout-btn:hover { background-color: #e74c3c !important; color: white !important; }
+        .logout-btn:hover { background-color: #e74c3c !important; }
 
         /* --- Contenido Principal --- */
         .content {
@@ -155,19 +161,16 @@
             border-radius: 6px;
         }
 
-        /* --- Botones --- */
-        .btn-action {
-            width: 32px; height: 32px;
-            display: inline-flex; align-items: center; justify-content: center;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
         .thumb-servicio {
             width: 45px; height: 45px;
             object-fit: cover;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 6px;
         }
 
         /* Secciones ocultas */
@@ -191,16 +194,16 @@
         </a>
         <a href="#" onclick="mostrarSeccion('solicitudes')" id="linkSolicitudes">
             <i class="fas fa-envelope-open-text"></i> Solicitudes
-            <span class="badge bg-danger ms-auto rounded-pill" th:if="${solicitudesPendientes.size() > 0}" th:text="${solicitudesPendientes.size()}"></span>
+            <span class="badge bg-danger ms-auto rounded-pill"
+                  th:if="${solicitudesPendientes != null and !solicitudesPendientes.empty}"
+                  th:text="${solicitudesPendientes.size()}"></span>
         </a>
         <a href="#" onclick="mostrarSeccion('tramites')" id="linkTramites">
             <i class="fas fa-file-signature"></i> Trámites en Curso
         </a>
-
         <a href="#" onclick="mostrarSeccion('historial')" id="linkHistorial">
             <i class="fas fa-history"></i> Historial
         </a>
-
         <a href="#" onclick="mostrarSeccion('servicios')" id="linkServicios">
             <i class="fas fa-concierge-bell"></i> Servicios
         </a>
@@ -209,8 +212,8 @@
         </a>
     </div>
 
-    <form th:action="@{/logout}" method="post" style="display: block; width: 100%;">
-        <button type="submit" class="btn logout-btn w-auto d-flex align-items-center" style="margin: 20px;">
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="logout-btn">
             <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
         </button>
     </form>
@@ -253,25 +256,15 @@
 
     <section id="solicitudes">
         <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-inbox text-warning me-2"></i> Bandeja de Entrada</h3>
-
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-custom table-hover">
                     <thead>
-                    <tr>
-                        <th>#ID</th>
-                        <th>Fecha</th>
-                        <th>Cliente</th>
-                        <th>Servicio Solicitado</th>
-                        <th>Detalle</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
+                    <tr><th>#ID</th> <th>Fecha</th> <th>Cliente</th> <th>Trámite</th> <th>Detalle</th> <th class="text-center">Acciones</th></tr>
                     </thead>
                     <tbody>
                     <tr th:if="${solicitudesPendientes == null or solicitudesPendientes.empty}">
-                        <td colspan="6" class="text-center p-5 text-muted">
-                            <i class="far fa-check-circle fa-2x mb-3"></i><br>Todo al día. No hay solicitudes pendientes.
-                        </td>
+                        <td colspan="6" class="text-center p-5 text-muted">No hay solicitudes pendientes.</td>
                     </tr>
                     <tr th:each="t : ${solicitudesPendientes}">
                         <td class="fw-bold text-muted">#<span th:text="${t.idTramite}"></span></td>
@@ -288,14 +281,14 @@
                         <td><span class="badge bg-primary bg-opacity-10 text-primary" th:text="${t.servicio.nombre}"></span></td>
                         <td class="text-truncate" style="max-width: 200px;" th:text="${t.observaciones}"></td>
                         <td class="text-center">
-                            <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/aceptado'}"
-                               class="btn btn-success btn-sm me-1" title="Aceptar" onclick="return confirm('¿Aceptar solicitud?')">
+                            <button class="btn btn-success btn-sm me-1" title="Aceptar"
+                                    th:attr="onclick=|confirmarAccion('/tramite/cambiarEstado/' + ${t.idTramite} + '/aceptado', '¿Aceptar solicitud?', 'El trámite pasará a estado Aceptado.')|">
                                 <i class="fas fa-check"></i>
-                            </a>
-                            <a th:href="@{'/tramite/cambiarEstado/' + ${t.idTramite} + '/rechazado'}"
-                               class="btn btn-outline-danger btn-sm" title="Rechazar" onclick="return confirm('¿Rechazar solicitud?')">
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" title="Rechazar"
+                                    th:attr="onclick=|confirmarAccion('/tramite/cambiarEstado/' + ${t.idTramite} + '/rechazado', '¿Rechazar solicitud?', 'Esta acción no se puede deshacer.', 'warning')|">
                                 <i class="fas fa-times"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -311,128 +304,94 @@
         </div>
 
         <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-custom table-hover">
-                    <thead>
-                    <tr>
-                        <th>#ID</th>
-                        <th>Cliente</th>
-                        <th>Servicio</th>
-                        <th>Estado Pago</th>
-                        <th class="text-center">Sala de Proceso</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${tramitesEnProceso == null or tramitesEnProceso.empty}">
-                        <td colspan="5" class="text-center p-5 text-muted">No hay trámites en curso actualmente.</td>
-                    </tr>
-                    <tr th:each="t : ${tramitesEnProceso}">
-                        <td class="fw-bold">#<span th:text="${t.idTramite}"></span></td>
-                        <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
-                        <td th:text="${t.servicio.nombre}"></td>
-
-                        <td>
-                            <span th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}"
-                                  class="badge bg-success"><i class="fas fa-check-circle me-1"></i> PAGADO</span>
-                            <span th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}"
-                                  class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> PENDIENTE</span>
-                        </td>
-
-                        <td class="text-center">
-                            <div th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
-                                <a th:href="@{'/proceso/notario/' + ${t.idTramite}}" class="btn btn-primary btn-sm shadow-sm">
-                                    <i class="fas fa-comments me-1"></i> Abrir Chat
-                                </a>
-                            </div>
-                            <div th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
-                                <button class="btn btn-light text-muted btn-sm border" disabled>
-                                    <i class="fas fa-lock me-1"></i> Bloqueado
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="table table-custom table-hover">
+                <thead><tr><th>#ID</th> <th>Cliente</th> <th>Servicio</th> <th>Estado Pago</th> <th class="text-center">Sala de Proceso</th></tr></thead>
+                <tbody>
+                <tr th:if="${tramitesEnProceso == null or tramitesEnProceso.empty}"><td colspan="5" class="text-center p-5 text-muted">No hay trámites en curso.</td></tr>
+                <tr th:each="t : ${tramitesEnProceso}">
+                    <td class="fw-bold">#<span th:text="${t.idTramite}"></span></td>
+                    <td th:text="${t.cliente.nombre} + ' ' + ${t.cliente.apellido}"></td>
+                    <td th:text="${t.servicio.nombre}"></td>
+                    <td>
+                        <span th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-success"><i class="fas fa-check-circle me-1"></i> PAGADO</span>
+                        <span th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}" class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> PENDIENTE</span>
+                    </td>
+                    <td class="text-center">
+                        <div th:if="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
+                            <a th:href="@{'/proceso/notario/' + ${t.idTramite}}" class="btn btn-primary btn-sm shadow-sm"><i class="fas fa-comments me-1"></i> Abrir Chat</a>
+                        </div>
+                        <div th:unless="${estadoPagos != null and estadoPagos.get(t.idTramite) == true}">
+                            <button class="btn btn-light text-muted btn-sm border" disabled><i class="fas fa-lock me-1"></i> Bloqueado</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
     <section id="historial">
         <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-history text-secondary me-2"></i> Historial de Movimientos</h3>
-        <div class="alert alert-light border shadow-sm">
-            <i class="fas fa-info-circle text-muted"></i> Aquí se registran todos los cambios de estado y eventos importantes de los trámites.
-        </div>
-
         <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-custom table-hover">
-                    <thead>
-                    <tr>
-                        <th>Fecha y Hora</th>
-                        <th>Trámite</th>
-                        <th>Cliente</th>
-                        <th>Estado</th>
-                        <th>Comentario / Detalle</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${historialCompleto == null or historialCompleto.empty}">
-                        <td colspan="5" class="text-center p-5 text-muted">El historial está vacío.</td>
-                    </tr>
-                    <tr th:each="h : ${historialCompleto}">
-                        <td><small class="text-muted" th:text="${#dates.format(h.fecha, 'dd/MM/yyyy HH:mm')}"></small></td>
-                        <td class="fw-bold">#<span th:text="${h.tramite.idTramite}"></span></td>
-                        <td th:text="${h.tramite.cliente.nombre} + ' ' + ${h.tramite.cliente.apellido}"></td>
-                        <td>
-                                <span th:class="'badge ' + (${h.estado.name() == 'aceptado' ? 'bg-success' : (h.estado.name() == 'pendiente' ? 'bg-warning text-dark' : 'bg-secondary')})"
-                                      th:text="${h.estado}"></span>
-                        </td>
-                        <td class="text-muted small" th:text="${h.comentario}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="table table-custom table-hover">
+                <thead><tr><th>Fecha</th> <th>Trámite</th> <th>Cliente</th> <th>Estado</th> <th>Detalle</th></tr></thead>
+                <tbody>
+                <tr th:if="${historialCompleto == null or historialCompleto.empty}"><td colspan="5" class="text-center p-5 text-muted">Sin movimientos.</td></tr>
+                <tr th:each="h : ${historialCompleto}">
+                    <td><small class="text-muted" th:text="${#dates.format(h.fecha, 'dd/MM/yyyy HH:mm')}"></small></td>
+                    <td class="fw-bold">#<span th:text="${h.tramite.idTramite}"></span></td>
+                    <td th:text="${h.tramite.cliente.nombre} + ' ' + ${h.tramite.cliente.apellido}"></td>
+                    <td><span class="badge bg-secondary" th:text="${h.estado}"></span></td>
+                    <td class="text-muted small" th:text="${h.comentario}"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
     <section id="servicios">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="fw-bold text-dark"><i class="fas fa-concierge-bell text-secondary me-2"></i> Catálogo de Servicios</h3>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">
-                <i class="fas fa-plus me-2"></i> Nuevo Servicio
-            </button>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarServicio">
+                    <i class="fas fa-plus me-2"></i> Nuevo
+                </button>
+
+                <div class="dropdown">
+                    <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-file-export me-1"></i> Exportar
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/servicios/exportar-excel}"><i class="fas fa-file-excel text-success me-2"></i> Excel</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf text-danger me-2"></i> PDF (Próximamente)</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="table-container">
             <table class="table table-custom align-middle">
-                <thead>
-                <tr>
-                    <th>Img</th>
-                    <th>Nombre del Servicio</th>
-                    <th>Descripción</th>
-                    <th>Costo</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-                </thead>
+                <thead><tr><th>Img</th> <th>Nombre</th> <th>Descripción</th> <th>Costo</th> <th class="text-center">Acciones</th></tr></thead>
                 <tbody>
                 <tr th:each="servicio : ${servicios}">
                     <td>
                         <img th:if="${servicio.img != null}" th:src="@{'/uploads/servicios/' + ${servicio.img}}" class="thumb-servicio">
-                        <div th:unless="${servicio.img != null}" class="thumb-servicio d-flex align-items-center justify-content-center bg-light text-muted">
-                            <i class="fas fa-image"></i>
-                        </div>
+                        <div th:unless="${servicio.img != null}" class="thumb-servicio d-flex align-items-center justify-content-center bg-light text-muted"><i class="fas fa-image"></i></div>
                     </td>
                     <td class="fw-bold text-dark" th:text="${servicio.nombre}"></td>
-                    <td class="text-muted small" th:text="${servicio.descripcion}"></td>
+                    <td class="text-muted small text-truncate" style="max-width: 250px;" th:text="${servicio.descripcion}"></td>
                     <td class="text-success fw-bold" th:text="'S/ ' + ${servicio.costo}"></td>
                     <td class="text-center">
                         <button class="btn btn-outline-warning btn-action me-1" th:attr="onclick=|editarServicio(${servicio.idServicio})|" title="Editar">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <a th:href="@{'/servicios/eliminar/' + ${servicio.idServicio}}" class="btn btn-outline-danger btn-action"
-                           onclick="return confirm('¿Seguro que deseas eliminar este servicio?');" title="Eliminar">
+
+                        <button class="btn btn-outline-danger btn-action"
+                                th:attr="onclick=|confirmarEliminacion('/servicios/eliminar/' + ${servicio.idServicio})|"
+                                title="Eliminar">
                             <i class="fas fa-trash"></i>
-                        </a>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -444,11 +403,7 @@
         <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-users text-info me-2"></i> Directorio de Clientes</h3>
         <div class="table-container">
             <table class="table table-custom table-striped">
-                <thead>
-                <tr>
-                    <th>ID</th> <th>Nombre Completo</th> <th>DNI</th> <th class="text-center">Usuario Sistema</th>
-                </tr>
-                </thead>
+                <thead><tr><th>ID</th> <th>Nombre Completo</th> <th>DNI</th> <th class="text-center">Usuario Sistema</th></tr></thead>
                 <tbody>
                 <tr th:each="cliente : ${clientes}">
                     <td th:text="${cliente.idCliente}"></td>
@@ -470,20 +425,15 @@
 <div class="modal fade" id="modalAgregarServicio" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form th:action="@{/servicios/guardar}" method="post" th:object="${servicio}" enctype="multipart/form-data">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">Agregar Nuevo Servicio</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+            <form th:action="@{/servicios/guardar}" method="post" enctype="multipart/form-data">
+                <div class="modal-header bg-dark text-white"><h5 class="modal-title">Nuevo Servicio</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="mb-3"><label>Imagen</label><input type="file" class="form-control" name="imagenArchivo" accept="image/*" required></div>
-                    <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" th:field="*{nombre}" required></div>
-                    <div class="mb-3"><label>Descripción</label><textarea class="form-control" th:field="*{descripcion}" required></textarea></div>
-                    <div class="mb-3"><label>Costo</label><input type="number" class="form-control" step="0.01" th:field="*{costo}" required></div>
+                    <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" name="nombre" required></div>
+                    <div class="mb-3"><label>Descripción</label><textarea class="form-control" name="descripcion" required></textarea></div>
+                    <div class="mb-3"><label>Costo</label><input type="number" class="form-control" step="0.01" name="costo" required></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar Servicio</button>
-                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary">Guardar</button></div>
             </form>
         </div>
     </div>
@@ -493,21 +443,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form th:action="@{/servicios/editar}" method="post" enctype="multipart/form-data">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title">Editar Servicio</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header bg-warning text-dark"><h5 class="modal-title">Editar Servicio</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <input type="hidden" id="editIdServicio" name="idServicio">
-                    <div class="text-center mb-3"><img id="editPreview" src="" class="rounded" style="width:100px; height:100px; object-fit:cover; border:1px solid #ddd;"></div>
+                    <div class="text-center mb-3"><img id="editPreview" src="" class="rounded" style="width:80px; height:80px; object-fit:cover; border:1px solid #ddd;"></div>
                     <div class="mb-3"><label>Cambiar Imagen</label><input type="file" class="form-control" name="imagenArchivo"></div>
                     <div class="mb-3"><label>Nombre</label><input type="text" class="form-control" id="editNombre" name="nombre" required></div>
                     <div class="mb-3"><label>Descripción</label><textarea class="form-control" id="editDescripcion" name="descripcion" required></textarea></div>
                     <div class="mb-3"><label>Costo</label><input type="number" class="form-control" id="editCosto" name="costo" step="0.01" required></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning fw-bold">Actualizar</button>
-                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-warning fw-bold">Actualizar</button></div>
             </form>
         </div>
     </div>
@@ -516,10 +461,7 @@
 <div class="modal fade" id="modalUsuarioCliente" tabindex="-1">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">Info Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+            <div class="modal-header bg-info text-white"><h5 class="modal-title">Info Usuario</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body text-center">
                 <div class="display-1 text-muted mb-2"><i class="fas fa-user-circle"></i></div>
                 <p><strong>Usuario:</strong> <span id="usuarioNombre"></span></p>
@@ -530,8 +472,18 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    // Script de navegación
+    // Configuración Toast
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+
     function mostrarSeccion(id) {
         document.querySelectorAll('section').forEach(sec => sec.classList.remove('active-section'));
         const target = document.getElementById(id);
@@ -546,7 +498,48 @@
         const params = new URLSearchParams(window.location.search);
         const seccion = params.get("seccion") || "inicio";
         mostrarSeccion(seccion);
+
+        // Notificación si hay éxito en URL
+        if(params.get('edit') === 'success') {
+            Toast.fire({ icon: 'success', title: 'Servicio actualizado correctamente' });
+        }
     });
+
+    // 1. CONFIRMACIÓN GENÉRICA (Para Aceptar/Rechazar)
+    function confirmarAccion(url, titulo, texto, tipo = 'question') {
+        Swal.fire({
+            title: titulo,
+            text: texto,
+            icon: tipo,
+            showCancelButton: true,
+            confirmButtonColor: '#1a252f',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    // 2. CONFIRMACIÓN ESPECÍFICA PARA ELIMINAR
+    function confirmarEliminacion(url) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
 
     function editarServicio(id) {
         fetch('/servicios/editar/' + id).then(r => r.json()).then(data => {

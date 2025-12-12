@@ -24,17 +24,9 @@ import java.util.UUID;
 @RequestMapping("/servicios")
 public class ServiciosController {
 
-    private static final String UPLOAD_DIR = "/app/uploads/servicios/"; 
+    private static final String UPLOAD_DIR = "/app/uploads/servicios/";
     @Autowired
     private ServicioRepository servicioRepository;
-
-    @GetMapping
-    public String listarServicios(Model model, @RequestParam(required = false) String seccion) {
-        model.addAttribute("servicios", servicioRepository.findAll());
-        model.addAttribute("servicio", new Servicio());
-        model.addAttribute("seccion", seccion != null ? seccion : "servicios");
-        return "SistemaNotario";
-    }
 
     @PostMapping("/guardar")
     public String guardarServicio(@ModelAttribute Servicio servicio,
@@ -50,27 +42,22 @@ public class ServiciosController {
         }
 
         servicioRepository.save(servicio);
-        return "redirect:/servicios?seccion=servicios";
+        // CORRECCIÓN: Redirigir al controlador principal, NO a /servicios
+        return "redirect:/SistemaNotario?seccion=servicios";
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarServicio(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        try {
-            servicioRepository.findById(id).ifPresent(s -> {
-                if (s.getImg() != null) {
-                    try {
-                        Files.deleteIfExists(Paths.get(UPLOAD_DIR + s.getImg()));
-                    } catch (IOException ignored) {}
-                }
-                servicioRepository.deleteById(id);
-            });
-            return "redirect:/servicios?seccion=servicios&eliminado=true";
-
-        } catch (DataIntegrityViolationException e) {
-            return "redirect:/servicios?seccion=servicios&error=tiene_tramites";
-        } catch (Exception e) {
-            return "redirect:/servicios?seccion=servicios&error=desconocido";
-        }
+    public String eliminarServicio(@PathVariable Integer id) {
+        servicioRepository.findById(id).ifPresent(s -> {
+            if (s.getImg() != null) {
+                try {
+                    Files.deleteIfExists(Paths.get(UPLOAD_DIR + s.getImg()));
+                } catch (IOException ignored) {}
+            }
+            servicioRepository.deleteById(id);
+        });
+        // CORRECCIÓN: Redirigir al controlador principal
+        return "redirect:/SistemaNotario?seccion=servicios";
     }
 
     @GetMapping("/editar/{id}")
@@ -84,7 +71,7 @@ public class ServiciosController {
                                  @RequestParam("imagenArchivo") MultipartFile imagen) throws IOException {
 
         Servicio existente = servicioRepository.findById(servicio.getIdServicio()).orElse(null);
-        if (existente == null) return "redirect:/servicios?seccion=servicios";
+        if (existente == null) return "redirect:/SistemaNotario?seccion=servicios";
 
         existente.setNombre(servicio.getNombre());
         existente.setDescripcion(servicio.getDescripcion());
@@ -104,9 +91,11 @@ public class ServiciosController {
         }
 
         servicioRepository.save(existente);
-        return "redirect:/servicios?seccion=servicios&edit=success";
+        // CORRECCIÓN: Redirigir al controlador principal
+        return "redirect:/SistemaNotario?seccion=servicios&edit=success";
     }
 
+    // Exportar Excel (Esto sí se queda aquí porque descarga un archivo)
     @GetMapping("/exportar-excel")
     public void exportarServiciosExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
