@@ -248,3 +248,47 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:53) ~[mysql-connector-j-9.1.0.jar:9.1.0]
 	... 59 common frames omitted
 
+2025-12-11T23:20:24.184-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] c.e.P.ProyectoIntegradorApplication      : Starting ProyectoIntegradorApplication using Java 21.0.7 with PID 9904 (C:\Proyectos\ProyectoIntegrador\target\classes started by Usuario in C:\Proyectos\ProyectoIntegrador)
+2025-12-11T23:20:24.187-05:00 DEBUG 9904 --- [ProyectoIntegrador] [restartedMain] c.e.P.ProyectoIntegradorApplication      : Running with Spring Boot v3.4.0, Spring v6.2.0
+2025-12-11T23:20:24.188-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] c.e.P.ProyectoIntegradorApplication      : No active profile set, falling back to 1 default profile: "default"
+2025-12-11T23:20:24.251-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-12-11T23:20:24.251-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-12-11T23:20:25.280-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-11T23:20:25.422-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 130 ms. Found 15 JPA repository interfaces.
+2025-12-11T23:20:26.289-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-12-11T23:20:26.307-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-11T23:20:26.308-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2025-12-11T23:20:26.363-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-12-11T23:20:26.364-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2111 ms
+2025-12-11T23:20:26.561-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-11T23:20:26.638-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+2025-12-11T23:20:26.685-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-11T23:20:26.949-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-11T23:20:26.982-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-11T23:20:27.136-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@17086ed3
+2025-12-11T23:20:27.138-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-11T23:20:27.155-05:00  WARN 9904 --- [ProyectoIntegrador] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-11T23:20:27.157-05:00  WARN 9904 --- [ProyectoIntegrador] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-12-11T23:20:27.193-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-12-11T23:20:28.031-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-11T23:20:28.355-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-11T23:20:29.088-05:00  WARN 9904 --- [ProyectoIntegrador] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-11T23:20:29.147-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-12-11T23:20:29.871-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-12-11T23:20:29.906-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-12-11T23:20:29.915-05:00  INFO 9904 --- [ProyectoIntegrador] [restartedMain] c.e.P.ProyectoIntegradorApplication      : Started ProyectoIntegradorApplication in 6.293 seconds (process running for 6.95)
+2025-12-11T23:20:34.898-05:00  INFO 9904 --- [ProyectoIntegrador] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-11T23:20:34.898-05:00  INFO 9904 --- [ProyectoIntegrador] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-11T23:20:34.900-05:00  INFO 9904 --- [ProyectoIntegrador] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-12-11T23:46:38.790-05:00  INFO 9904 --- [ProyectoIntegrador] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-12-11T23:46:38.797-05:00  INFO 9904 --- [ProyectoIntegrador] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-12-11T23:46:38.801-05:00  INFO 9904 --- [ProyectoIntegrador] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-12-11T23:46:38.803-05:00  INFO 9904 --- [ProyectoIntegrador] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-12-11T23:46:38.812-05:00  INFO 9904 --- [ProyectoIntegrador] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
