@@ -1,63 +1,118 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registrarse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/stylesLogin.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta | Notaría Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <style>
+        /* Mismos estilos base que Login para consistencia */
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        .login-container { display: flex; width: 100%; min-height: 100vh; background: #fff; }
+        /* Invertimos el orden visual: Formulario a la izquierda, Branding a la derecha (opcional, para variar) */
+        .branding-side { flex: 1; background: linear-gradient(135deg, #1a252f, #2c3e50); display: flex; align-items: center; justify-content: center; color: white; position: relative; }
+        .form-side { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .form-wrapper { width: 100%; max-width: 450px; } /* Un poco más ancho para el registro */
+        .logo-img { width: 120px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+        .input-group-custom { position: relative; margin-bottom: 1rem; }
+        .input-icon { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: #6c757d; z-index: 10; }
+        .form-control { padding-left: 45px; height: 45px; border-radius: 8px; border: 2px solid #e9ecef; font-size: 0.95rem; }
+        .form-control:focus { border-color: #2c3e50; box-shadow: none; }
+        .btn-primary { background-color: #d4af37; border-color: #d4af37; padding: 12px; font-weight: 600; width: 100%; border-radius: 8px; }
+        .btn-primary:hover { background-color: #c4a030; border-color: #c4a030; }
+        .link-gold { color: #d4af37; text-decoration: none; font-weight: 600; }
+        .link-gold:hover { text-decoration: underline; color: #b8860b; }
+
+        .section-divider { display: flex; align-items: center; margin: 1.5rem 0; color: #aaa; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .section-divider::before, .section-divider::after { content: ""; flex: 1; border-top: 1px solid #eee; }
+        .section-divider span { padding: 0 10px; }
+
+        @media (max-width: 768px) {
+            .login-container { flex-direction: column-reverse; } /* En móvil, primero el form */
+            .branding-side { padding: 2rem 1rem; flex: none; }
+        }
+    </style>
 </head>
 <body>
-<div class="bg-circle left"></div>
-<div class="bg-circle right"></div>
 
-<div class="page-wrap">
-    <div class="login-card" style="padding-top: 30px;">
+<div class="login-container">
 
-        <h4 class="mb-4">Registro de Cliente</h4>
+    <div class="form-side">
+        <div class="form-wrapper">
+            <h2 class="fw-bold mb-2 text-dark">Crear Cuenta</h2>
+            <p class="text-muted mb-4">Regístrate para gestionar tus trámites notariales.</p>
 
-        <form th:action="@{/registrarse}" method="post">
-            <div class="mb-3">
-                <input type="text" class="form-control" name="nombre" placeholder="Nombre" required>
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="apellido" placeholder="Apellido" required>
-            </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="dni" placeholder="DNI" required pattern="\d{8}" title="El DNI debe tener 8 dígitos">
+            <div th:if="${param.error}" class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <div>El nombre de usuario ya existe. Intenta con otro.</div>
             </div>
 
-            <hr class="my-3">
-            <div class="mb-3">
-                <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario" required>
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
-            </div>
+            <form th:action="@{/registrarse}" method="post">
 
-            <div class="mb-3">
-                <button type="submit" class="btn btn-gold">Crear Cuenta</button>
-            </div>
-        </form>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" name="apellido" class="form-control" placeholder="Apellido" required>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="divider"></div>
-        <p class="small mb-2">¿Ya tienes una cuenta?</p>
-        <a th:href="@{/Login}" class="btn btn-outline-secondary btn-sm" style="width: 100%;">Iniciar Sesión</a>
+                <div class="input-group-custom">
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" name="dni" class="form-control" placeholder="DNI (8 dígitos)" required pattern="\d{8}" maxlength="8" title="El DNI debe tener 8 dígitos numéricos">
+                </div>
+
+                <div class="section-divider"><span>Datos de Acceso</span></div>
+
+                <div class="input-group-custom">
+                    <i class="fas fa-user-circle input-icon"></i>
+                    <input type="text" name="username" class="form-control" placeholder="Nombre de Usuario (Login)" required>
+                </div>
+
+                <div class="input-group-custom">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label small text-muted" for="terms">
+                        Acepto los <a href="#" class="text-secondary text-decoration-underline">términos y condiciones</a> del servicio.
+                    </label>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">REGISTRARME</button>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center border-top pt-3">
+                <p class="text-muted small mb-1">¿Ya tienes una cuenta?</p>
+                <a th:href="@{/Login}" class="link-gold">Volver a Iniciar Sesión</a>
+            </div>
+        </div>
     </div>
+
+    <div class="branding-side">
+        <div class="text-center p-4">
+            <img src="img/logo_notarial.png" alt="Logo Notaría" class="mb-4 logo-img">
+            <h1 class="fw-bold">Únete a Nosotros</h1>
+            <p class="text-white-50 fs-5">La forma más rápida y segura de realizar tus trámites legales desde casa.</p>
+        </div>
+    </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    if (new URLSearchParams(window.location.search).has('error')) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error de Registro',
-            text: 'El nombre de usuario ya existe. Por favor elige otro.',
-            confirmButtonColor: '#d33'
-        });
-    }
-</script>
 </body>
 </html>
