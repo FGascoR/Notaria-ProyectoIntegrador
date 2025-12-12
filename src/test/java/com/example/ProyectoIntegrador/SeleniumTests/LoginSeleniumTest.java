@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder; // Necesario para crear usuario válido
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Duration;
 
@@ -29,7 +29,7 @@ public class LoginSeleniumTest {
     private UsuarioRepository usuarioRepository;
     
     @Autowired
-    private PasswordEncoder passwordEncoder; // Inyectamos para guardar la clave correctamente
+    private PasswordEncoder passwordEncoder;
 
     private final String baseUrl = "http://localhost:8080/Login";
 

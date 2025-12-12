@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ClienteRepositoryMockitoTest { // Podrías renombrarlo a ClienteControllerTest
+public class ClienteRepositoryMockitoTest {
 
     @Mock
-    private ClienteRepository clienteRepository; // El simulacro
+    private ClienteRepository clienteRepository;
 
     @InjectMocks
-    private ClienteController clienteController; // Quien usa el simulacro
+    private ClienteController clienteController;
 
     @Test
     void testObtenerUsuarioCliente_EncuentraCliente() {
