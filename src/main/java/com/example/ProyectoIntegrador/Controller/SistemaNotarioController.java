@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,9 @@ public class SistemaNotarioController {
     
     @Autowired
     private TramiteRepository tramiteRepository;
+
+    @Autowired
+    private HistorialTramiteRepository historialTramiteRepository;
    
 
     @GetMapping("/SistemaNotario")
@@ -56,21 +61,24 @@ public class SistemaNotarioController {
             }
         }
 
-        
+        // 1. Bandejas
         List<Tramite> pendientes = tramiteRepository.findByEstado(Tramite.Estado.pendiente);
         model.addAttribute("solicitudesPendientes", pendientes);
-
 
         List<Tramite> aceptados = tramiteRepository.findByEstado(Tramite.Estado.aceptado);
         model.addAttribute("tramitesEnProceso", aceptados);
 
-
+        // 2. Pagos
         Map<Integer, Boolean> estadoPagos = new HashMap<>();
         for (Tramite t : aceptados) {
             estadoPagos.put(t.getIdTramite(), pagoRepository.existsByTramite(t));
         }
         model.addAttribute("estadoPagos", estadoPagos);
 
+        // 3. NUEVO: Cargar todo el historial (ordenado por ID descendente para ver lo último primero)
+        model.addAttribute("historialCompleto", historialTramiteRepository.findAll(Sort.by(Sort.Direction.DESC, "idHistorial")));
+
+        // 4. Generales
         model.addAttribute("servicios", servicioRepository.findAll());
         model.addAttribute("servicio", new Servicio());
         model.addAttribute("clientes", clienteRepository.findAll());

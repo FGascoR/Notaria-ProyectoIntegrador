@@ -1,6 +1,7 @@
 package com.example.ProyectoIntegrador.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Table(name = "HistorialTramite")
 @Getter
 @Setter
+@Data
 public class HistorialTramite {
 
     @Id

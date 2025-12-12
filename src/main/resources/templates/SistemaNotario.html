@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Panel de Gestión | Notaría Digital</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" >
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -195,6 +196,11 @@
         <a href="#" onclick="mostrarSeccion('tramites')" id="linkTramites">
             <i class="fas fa-file-signature"></i> Trámites en Curso
         </a>
+
+        <a href="#" onclick="mostrarSeccion('historial')" id="linkHistorial">
+            <i class="fas fa-history"></i> Historial
+        </a>
+
         <a href="#" onclick="mostrarSeccion('servicios')" id="linkServicios">
             <i class="fas fa-concierge-bell"></i> Servicios
         </a>
@@ -203,9 +209,11 @@
         </a>
     </div>
 
-    <a th:href="@{/logout}" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-    </a>
+    <form th:action="@{/logout}" method="post" style="display: block; width: 100%;">
+        <button type="submit" class="btn logout-btn w-auto d-flex align-items-center" style="margin: 20px;">
+            <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+        </button>
+    </form>
 </div>
 
 <div class="content">
@@ -342,6 +350,44 @@
                                 </button>
                             </div>
                         </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="historial">
+        <h3 class="mb-3 fw-bold text-dark"><i class="fas fa-history text-secondary me-2"></i> Historial de Movimientos</h3>
+        <div class="alert alert-light border shadow-sm">
+            <i class="fas fa-info-circle text-muted"></i> Aquí se registran todos los cambios de estado y eventos importantes de los trámites.
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Trámite</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Comentario / Detalle</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${historialCompleto == null or historialCompleto.empty}">
+                        <td colspan="5" class="text-center p-5 text-muted">El historial está vacío.</td>
+                    </tr>
+                    <tr th:each="h : ${historialCompleto}">
+                        <td><small class="text-muted" th:text="${#dates.format(h.fecha, 'dd/MM/yyyy HH:mm')}"></small></td>
+                        <td class="fw-bold">#<span th:text="${h.tramite.idTramite}"></span></td>
+                        <td th:text="${h.tramite.cliente.nombre} + ' ' + ${h.tramite.cliente.apellido}"></td>
+                        <td>
+                                <span th:class="'badge ' + (${h.estado.name() == 'aceptado' ? 'bg-success' : (h.estado.name() == 'pendiente' ? 'bg-warning text-dark' : 'bg-secondary')})"
+                                      th:text="${h.estado}"></span>
+                        </td>
+                        <td class="text-muted small" th:text="${h.comentario}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -487,27 +533,21 @@
 <script>
     // Script de navegación
     function mostrarSeccion(id) {
-        // Ocultar todas
         document.querySelectorAll('section').forEach(sec => sec.classList.remove('active-section'));
-
-        // Mostrar seleccionada
         const target = document.getElementById(id);
         if(target) target.classList.add('active-section');
 
-        // Actualizar links activos en sidebar
         document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
         const activeLink = document.getElementById('link' + id.charAt(0).toUpperCase() + id.slice(1));
         if(activeLink) activeLink.classList.add('active');
     }
 
-    // Mantener sección al recargar si hay parametro
     document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const seccion = params.get("seccion") || "inicio";
         mostrarSeccion(seccion);
     });
 
-    // Funciones de Modales (Lógica original conservada)
     function editarServicio(id) {
         fetch('/servicios/editar/' + id).then(r => r.json()).then(data => {
             document.getElementById('editIdServicio').value = data.idServicio;
